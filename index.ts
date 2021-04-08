@@ -1,7 +1,9 @@
 import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo'
 import { join } from 'path'
 import { lokiConnector } from './loki'
+import dotenv from 'dotenv'
 
+dotenv.config()
 const owner: string = process.env.OWNER ?? '396347223736057866'
 if (typeof process.env.BTKN === 'undefined') throw Error('BOT TOKEN MISSING! WAS IT SET IN THE ENVIRONMENT?')
 class DiscordClient extends AkairoClient {
