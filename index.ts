@@ -1,67 +1,26 @@
-import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo'
+import { ShardingManager } from 'discord.js'
 import { join } from 'path'
-import { lokiConnector } from './loki'
+import WebServer from './http'
 import dotenv from 'dotenv'
 
 dotenv.config()
-const owner: string = process.env.OWNER ?? '396347223736057866'
-if (typeof process.env.BTKN === 'undefined') throw Error('BOT TOKEN MISSING! WAS IT SET IN THE ENVIRONMENT?')
-class DiscordClient extends AkairoClient {
-  private readonly commandHandler: CommandHandler = new CommandHandler(this, {
-    allowMention: true,
-    blockBots: true,
-    blockClient: true,
-    directory: join(__dirname, 'commands'),
-    prefix: process.env.BOTPREF ?? 'ac!'
-  })
-
-  private readonly listenerHandler: ListenerHandler = new ListenerHandler(this, {
-    directory: join(__dirname, 'listeners')
-  })
-
-  private setPrefix (prefix: string): void {
-    const globalPrefix = lokiConnector.addCollection('globalPrefix')
-    globalPrefix.insertOne({ prefix: prefix })
-  }
-
-  public constructor () {
-    super({
-      ownerID: owner
-    }, {
-      disableMentions: 'everyone',
-      shards: 'auto',
-      ws: { intents: ['GUILDS', 'GUILD_MESSAGES'] }
-    })
-    this.commandHandler.useListenerHandler(this.listenerHandler)
-    this.listenerHandler.loadAll()
-    this.commandHandler.loadAll()
-    if (Array.isArray(this.commandHandler.prefix)) this.setPrefix(this.commandHandler.prefix[0])
-    else if (typeof this.commandHandler.prefix === 'string') this.setPrefix(this.commandHandler.prefix)
-    else this.setPrefix('ac!')
-  }
+if (typeof process.env.BTKN === 'undefined') {
+  throw Error('BOT TOKEN MISSING! WAS IT SET IN THE ENVIRONMENT?')
 }
 
-const client = new DiscordClient()
-client.login(process.env.BTKN).catch(e => {
-  console.error(e)
-  process.exit()
+if (typeof process.env.GLOBALPREFIX === 'undefined') {
+  throw Error('DEFAULT PREFIX MISSING, SET GLOBALPREFIX IN ENVIRONMENT!')
+}
+
+const shardingManager = new ShardingManager(join(__dirname, 'DiscordClient.js'), {
+  token: process.env.BTKN,
+  totalShards: 'auto'
 })
 
-setTimeout(async function (): Promise<void> {
-  await client.user?.setPresence({ activity: { type: 'PLAYING', name: 'message eating contest.' } })
-}, 10000)
-
-process.on('SIGHUP', function () {
-  client.destroy()
-  process.exit()
+shardingManager.on('shardCreate', function (shard) {
+  console.log(`Launching shard ${shard.id + 1} of ${shardingManager.totalShards}`)
 })
 
-process.on('SIGINT', function () {
-  client.destroy()
-  process.exit()
-})
+shardingManager.spawn()
 
-process.on('SIGTERM', function () {
-  client.destroy()
-  process.exit()
-})
+if (process.env.WEBPORT) WebServer(shardingManager, parseInt(process.env.WEBPORT))
