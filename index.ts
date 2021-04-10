@@ -21,6 +21,6 @@ shardingManager.on('shardCreate', function (shard) {
   console.log(`Launching shard ${shard.id + 1} of ${shardingManager.totalShards}`)
 })
 
-shardingManager.spawn()
+shardingManager.spawn(
 
 if (process.env.WEBPORT && !isNaN(parseInt(process.env.WEBPORT))) WebServer(shardingManager, parseInt(process.env.WEBPORT))
