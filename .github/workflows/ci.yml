@@ -26,3 +26,4 @@ jobs:
     - run: npm ci
     - run: npm install
     - run: npx tsc
+    - run: node dist/ci.js
