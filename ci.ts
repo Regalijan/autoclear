@@ -1,3 +1,1 @@
-import { readdirSync } from 'fs'
-import { join } from 'path'
-readdirSync(join(__dirname, 'dist'))
+console.log('I\'m alive!')
