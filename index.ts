@@ -23,4 +23,4 @@ shardingManager.on('shardCreate', function (shard) {
 
 shardingManager.spawn()
 
-if (process.env.WEBPORT) WebServer(shardingManager, parseInt(process.env.WEBPORT))
+if (process.env.WEBPORT && !isNaN(parseInt(process.env.WEBPORT))) WebServer(shardingManager, parseInt(process.env.WEBPORT))
