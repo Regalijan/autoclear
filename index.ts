@@ -14,7 +14,7 @@ if (typeof process.env.GLOBALPREFIX === 'undefined') {
   throw Error('DEFAULT PREFIX MISSING, SET GLOBALPREFIX IN ENVIRONMENT!')
 }
 
-;(function () {
+;(function (): void {
   const gpDoc = lokiConnector.addCollection('globalPrefix')
   const pref = gpDoc.findOne({ prefix: { $type: 'string' } })
   if (pref === null) {
@@ -26,7 +26,7 @@ if (typeof process.env.GLOBALPREFIX === 'undefined') {
   lokiConnector.saveDatabase(function (e) {
     if (e) throw Error(e)
   })
-})
+}())
 
 const shardingManager = new ShardingManager(join(__dirname, 'DiscordClient.js'), {
   token: process.env.BTKN,
