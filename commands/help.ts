@@ -36,11 +36,7 @@ export default class HelpCommand extends Command {
       .setTitle('Command Help')
       .setDescription(`Syntax: ${prefixString ?? 'ac!'}${command.aliases[0]} ${usage}`)
     if (command.aliases.length > 1) {
-      let aliases = ''
-      command.aliases.forEach(alias => {
-        aliases += ` ,${alias}`
-      })
-      aliases = aliases.replace(', ', '') // When a string is given to .replace(), only the first occurence is replaced
+      const aliases = command.aliases.toString().replace(/\[|\]/g, '')
       embed.addField('Aliases', aliases)
     }
     await message.channel.send(embed)
