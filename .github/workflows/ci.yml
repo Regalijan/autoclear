@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  TypeScript Compile:
+  TSC:
 
     runs-on: ubuntu-latest
 
