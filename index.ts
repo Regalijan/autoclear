@@ -3,6 +3,7 @@ import { join } from 'path'
 import WebServer from './http'
 import dotenv from 'dotenv'
 import { lokiConnector } from './loki'
+import { strictEqual } from 'assert'
 
 dotenv.config()
 if (typeof process.env.BTKN === 'undefined') {
@@ -13,10 +14,18 @@ if (typeof process.env.GLOBALPREFIX === 'undefined') {
   throw Error('DEFAULT PREFIX MISSING, SET GLOBALPREFIX IN ENVIRONMENT!')
 }
 
-lokiConnector.addCollection('globalPrefix').insertOne({ prefix: process.env.GLOBALPREFIX })
-
-lokiConnector.saveDatabase(function (e) {
-  if (e) throw Error(e)
+;(function () {
+  const gpDoc = lokiConnector.addCollection('globalPrefix')
+  const pref = gpDoc.findOne({ prefix: { $type: 'string' } })
+  if (pref === null) {
+    gpDoc.insertOne({ prefix: process.env.GLOBALPREFIX })
+  } else if (pref !== process.env.GLOBALPREFIX) {
+    pref.prefix = process.env.GLOBALPREFIX
+    gpDoc.update(pref)
+  }
+  lokiConnector.saveDatabase(function (e) {
+    if (e) throw Error(e)
+  })
 })
 
 const shardingManager = new ShardingManager(join(__dirname, 'DiscordClient.js'), {
