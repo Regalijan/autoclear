@@ -3,6 +3,10 @@ Utility bot for mass-deleting messages and autoclearing channels
 
 This bot was made for Node `15.x` but should work fine on `14.x` (anything lower is not guaranteed to work).
 
+- Create a file in the directory named `.env`
+- Set `BTKN` to your bot token
+- Set `GLOBALPREFIX` to what the prefix should be for all servers without a custom one.
+
 ## Commands
 - `ac!ping` This better be obvious
 - `ac!help` Should also be obvious
