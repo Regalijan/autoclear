@@ -48,7 +48,8 @@ setTimeout(async function (): Promise<void> {
 }, 10000)
 
 setInterval(async function (): Promise<void> {
-  const autoclearData = lokiConnector.addCollection('autoclear').find({ lastRan: { $gt: Date.now() + 1800000 }})
+  const autoclearCol = lokiConnector.addCollection('autoclear')
+  const autoclearData = autoclearCol.find({ lastRan: { $gt: Date.now() + 1800000 }})
   for (let i = 0; i < autoclearData.length; i++) {
     const guild = bot.guilds.cache.find(g => g.id === autoclearData[i].guild)
     if (typeof guild === 'undefined') continue
@@ -60,5 +61,7 @@ setInterval(async function (): Promise<void> {
     const nonTypedChannel: any = cachedChannel
     const channel: TextChannel = nonTypedChannel
     await channel.bulkDelete(500, true)
+    autoclearData[i].lastRan = Date.now()
+    autoclearCol.update(autoclearData[i])
   }
 }, 60000)
