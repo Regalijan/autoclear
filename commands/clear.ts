@@ -8,6 +8,10 @@ export default class ClearCommand extends Command {
       args: [
         {
           id: 'amount',
+          prompt: {
+            retry: 'You gave me something that wasn\'t a number!',
+            start: 'How many messages should be deleted?'
+          },
           type: 'integer'
         },
         {
