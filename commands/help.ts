@@ -40,7 +40,7 @@ export default class HelpCommand extends Command {
       command.aliases.forEach(alias => {
         aliases += ` ,${alias}`
       })
-      aliases.replace(', ', '') // When a string is given to .replace(), only the first occurence is replaced
+      aliases = aliases.replace(', ', '') // When a string is given to .replace(), only the first occurence is replaced
       embed.addField('Aliases', aliases)
     }
     await message.channel.send(embed)
