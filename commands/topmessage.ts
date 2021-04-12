@@ -1,5 +1,5 @@
 import { Command } from 'discord-akairo'
-import { Message, MessageEmbed } from 'discord.js'
+import { Message, MessageEmbed, TextChannel } from 'discord.js'
 import { lokiConnector } from '../loki'
 
 export default class TopMessageCommand extends Command {
@@ -7,6 +7,15 @@ export default class TopMessageCommand extends Command {
     super('topmessage', {
       aliases: ['channelpin','topmessage','topmsg'],
       args: [
+        {
+          id: 'channel',
+          prompt: {
+            cancel: 'Command cancelled.',
+            start: 'Which channel?',
+            timeout: 'Too slow.'
+          },
+          type: 'textChannel'
+        },
         {
           id: 'json',
           prompt: {
@@ -17,11 +26,12 @@ export default class TopMessageCommand extends Command {
           type: 'string'
         }
       ],
-      channel: 'guild'
+      channel: 'guild',
+      description: { about: 'Sets the pinned message at the top of an autoclearing channel', usage: '<channel> <json>' }
     })
   }
 
-  public async exec (message: Message, { json }: { json: string }): Promise<void> {
+  public async exec (message: Message, { channel, json }: { channel: TextChannel, json: string }): Promise<void> {
     const embedBody = JSON.parse(json).catch(() => {})
     if (typeof embedBody === 'undefined') {
       await message.channel.send('Invalid JSON provided!')
@@ -33,7 +43,7 @@ export default class TopMessageCommand extends Command {
       return
     }
     const topMessageDoc = lokiConnector.addCollection('topMessages')
-    topMessageDoc.insertOne({ guild: message.guild?.id, embed: embed })
+    topMessageDoc.insertOne({ guild: message.guild?.id, channel: channel.id, embed: embed })
     await message.channel.send('Embed set!')
   }
 }
