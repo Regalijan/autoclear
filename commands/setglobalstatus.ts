@@ -15,7 +15,9 @@ export default class SetGlobalStatusCommand extends Command {
           },
           type: 'string'
         }
-      ]
+      ],
+      description: { about: 'Sets status across all shards', usage : '<status>' },
+      ownerOnly: true
     })
   }
 

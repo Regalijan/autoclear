@@ -17,6 +17,7 @@ export default class SetStatusCommand extends Command {
         }
       ],
       cooldown: 30000,
+      description: { about: 'Sets status for current shard', usage: '<status>' },
       ownerOnly: true,
       ratelimit: 1
     })
