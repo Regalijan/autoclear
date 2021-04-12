@@ -35,6 +35,14 @@ export default class HelpCommand extends Command {
       .setColor(message.member?.displayColor ?? 3756250)
       .setTitle('Command Help')
       .setDescription(`Syntax: ${prefixString ?? 'ac!'}${command.aliases[0]} ${usage}`)
+    if (command.aliases.length > 1) {
+      let aliases = ''
+      command.aliases.forEach(alias => {
+        aliases += ` ,${alias}`
+      })
+      aliases.replace(', ', '') // When a string is given to .replace(), only the first occurence is replaced
+      embed.addField('Aliases', aliases)
+    }
     await message.channel.send(embed)
   }
 }
