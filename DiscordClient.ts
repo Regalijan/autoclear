@@ -63,5 +63,8 @@ setInterval(async function (): Promise<void> {
     await channel.bulkDelete(500, true)
     autoclearData[i].lastRan = Date.now()
     autoclearCol.update(autoclearData[i])
+    const embed = lokiConnector.addCollection('topMessages').findOne({ guild: channel.guild.id })
+    if (embed === null) return
+    await channel.send(embed)
   }
 }, 60000)
