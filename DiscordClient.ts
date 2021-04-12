@@ -1,6 +1,8 @@
 import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo'
 import { join } from 'path'
 import dotenv from 'dotenv'
+import { lokiConnector } from './loki'
+import { TextChannel } from 'discord.js'
 
 dotenv.config()
 
@@ -22,7 +24,6 @@ class DiscordClient extends AkairoClient {
       ownerID: process.env.BOTOWNER ?? '396347223736057866'
     }, {
       disableMentions: 'everyone',
-      shards: 'auto',
       ws: { intents: ['GUILDS', 'GUILD_MESSAGES'] }
     })
     this.commandHandler.useListenerHandler(this.listenerHandler)
@@ -33,6 +34,7 @@ class DiscordClient extends AkairoClient {
 
 const bot = new DiscordClient()
 bot.login(process.env.BTKN).catch(e => {
+  console.error(e)
   process.exit()
 })
 
@@ -42,4 +44,21 @@ bot.once('ready', function () {
 
 setTimeout(async function (): Promise<void> {
   await bot.user?.setPresence({ activity: { type: 'PLAYING', name: 'message eating contest.' } })
-  }, 10000)
+  return
+}, 10000)
+
+setInterval(async function (): Promise<void> {
+  const autoclearData = lokiConnector.addCollection('autoclear').find({ lastRan: { $gt: Date.now() + 1800000 }})
+  for (let i = 0; i < autoclearData.length; i++) {
+    const guild = bot.guilds.cache.find(g => g.id === autoclearData[i].guild)
+    if (typeof guild === 'undefined') continue
+    const cachedChannel = guild.channels.cache.find(c => c.id === autoclearData[i].channel)
+    if (typeof cachedChannel === 'undefined') continue
+    if (typeof cachedChannel.permissionOverwrites.find(p => p.deny.has('MANAGE_MESSAGES')) !== 'undefined') continue
+    if (!guild.me?.hasPermission('MANAGE_MESSAGES') || typeof cachedChannel.permissionOverwrites.find(p => p.allow.has('MANAGE_MESSAGES')) === 'undefined') continue
+    if (cachedChannel.type !== 'text') continue
+    const nonTypedChannel: any = cachedChannel
+    const channel: TextChannel = nonTypedChannel
+    await channel.bulkDelete(500, true)
+  }
+}, 60000)
