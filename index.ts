@@ -15,6 +15,10 @@ if (typeof process.env.GLOBALPREFIX === 'undefined') {
 
 lokiConnector.addCollection('globalPrefix').insertOne({ prefix: process.env.GLOBALPREFIX })
 
+lokiConnector.saveDatabase(function (e) {
+  if (e) throw Error(e)
+})
+
 const shardingManager = new ShardingManager(join(__dirname, 'DiscordClient.js'), {
   token: process.env.BTKN,
   totalShards: 'auto'
