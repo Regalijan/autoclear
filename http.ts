@@ -17,7 +17,6 @@ export default function (shardingManager: ShardingManager, port: number) {
         'content-length': Buffer.byteLength(body)
       })
       res.end(body)
-      return
     }
 
     async function sendNotFound (): Promise<void> {
@@ -26,16 +25,14 @@ export default function (shardingManager: ShardingManager, port: number) {
         'content-length': Buffer.byteLength(body)
       })
       res.end(body)
-      return
     }
 
     async function sendMethodNotAllowed (): Promise<void> {
       const body = JSON.stringify({ error: 'Method not allowed' })
-      res.writeHead(405,{
+      res.writeHead(405, {
         'content-length': Buffer.byteLength(body)
       })
       res.end(body)
-      return
     }
 
     async function sendInternalServerError (): Promise<void> {
@@ -44,7 +41,6 @@ export default function (shardingManager: ShardingManager, port: number) {
         'content-length': Buffer.byteLength(body)
       })
       res.end(body)
-      return
     }
 
     async function deleteUserData (body: string, status: number): Promise<void> {
@@ -54,7 +50,6 @@ export default function (shardingManager: ShardingManager, port: number) {
         'content-length': Buffer.byteLength(body)
       })
       res.end(body)
-      return
     }
 
     const userData = credStore.findOne({ token: req.headers.authorization })
@@ -108,7 +103,7 @@ export default function (shardingManager: ShardingManager, port: number) {
           }
 
           const oauthBody = await oauthInfo.json()
-          const scopes: Array<string> = oauthBody.scopes
+          const scopes: string[] = oauthBody.scopes
 
           if (!scopes.includes('guilds')) {
             res.writeHead(400, {
@@ -132,16 +127,14 @@ export default function (shardingManager: ShardingManager, port: number) {
           if (userApiGuildsBody.status === 401) {
             await deleteUserData(JSON.stringify({ error: 'Credentials expired' }), 400)
             return
-          }
-
-          else if (!userApiGuildsBody.ok) {
+          } else if (!userApiGuildsBody.ok) {
             await sendInternalServerError()
             return
           }
 
           const userApiGuilds = await userApiGuildsBody.json()
-          let manageableGuilds: Array<{ icon: string, id: string, name: string, permissions: string }> = []
-          let mutualGuilds: Array<{ icon: string, id: string, name: string, permissions: string }> = []
+          const manageableGuilds: Array<{ icon: string, id: string, name: string, permissions: string }> = []
+          const mutualGuilds: Array<{ icon: string, id: string, name: string, permissions: string }> = []
           userApiGuilds.forEach((guild: { icon: string, id: string, name: string, permissions: string }) => {
             if ((parseInt(guild.permissions) & 0x20) === 32) manageableGuilds.push(guild)
           })
@@ -179,13 +172,13 @@ export default function (shardingManager: ShardingManager, port: number) {
           return
         }
         const tokenRequestBody = new URLSearchParams(
-          { 
+          {
             client_id: process.env.DISCORDOAUTHCLIENTID,
             client_secret: process.env.DISCORDOAUTHSECRET,
             code: code,
             grant_type: 'authorization_code',
             redirect_uri: `${process.env.WEBHOSTNAME}/auth/negotiate`,
-            scope: 'identify guilds' 
+            scope: 'identify guilds'
           }
         )
         const oauthTokenResponse = await fetch('https://discord.com/api/v8/oauth2/token', {
@@ -219,12 +212,10 @@ export default function (shardingManager: ShardingManager, port: number) {
           )
         }
 
-
       default:
         await sendNotFound()
         break
     }
-    return
   }
 
   if (isNaN(port)) throw Error('INVALID PORT GIVEN!')
