@@ -2,6 +2,7 @@ import { ShardingManager } from 'discord.js'
 import { join } from 'path'
 import WebServer from './http'
 import dotenv from 'dotenv'
+import { lokiConnector } from './loki'
 
 dotenv.config()
 if (typeof process.env.BTKN === 'undefined') {
@@ -11,6 +12,8 @@ if (typeof process.env.BTKN === 'undefined') {
 if (typeof process.env.GLOBALPREFIX === 'undefined') {
   throw Error('DEFAULT PREFIX MISSING, SET GLOBALPREFIX IN ENVIRONMENT!')
 }
+
+lokiConnector.addCollection('globalPrefix').insertOne({ prefix: process.env.GLOBALPREFIX })
 
 const shardingManager = new ShardingManager(join(__dirname, 'DiscordClient.js'), {
   token: process.env.BTKN,
