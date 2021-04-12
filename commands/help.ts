@@ -9,6 +9,11 @@ export default class HelpCommand extends Command {
       args: [
         {
           id: 'command',
+          prompt: {
+            retry: 'I could not find that command - try again.',
+            start: 'Which command?',
+            timeout: 'Too slow.'
+          },
           type: 'commandAlias'
         }
       ],
