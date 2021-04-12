@@ -3,7 +3,6 @@ import { join } from 'path'
 import WebServer from './http'
 import dotenv from 'dotenv'
 import { lokiConnector } from './loki'
-import { strictEqual } from 'assert'
 
 dotenv.config()
 if (typeof process.env.BTKN === 'undefined') {
