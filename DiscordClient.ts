@@ -55,7 +55,7 @@ setInterval(async function (): Promise<void> {
     const cachedChannel = guild.channels.cache.find(c => c.id === autoclearData[i].channel)
     if (typeof cachedChannel === 'undefined') continue
     if (typeof cachedChannel.permissionOverwrites.find(p => p.deny.has('MANAGE_MESSAGES')) !== 'undefined') continue
-    if (!guild.me?.hasPermission('MANAGE_MESSAGES') || typeof cachedChannel.permissionOverwrites.find(p => p.allow.has('MANAGE_MESSAGES')) === 'undefined') continue
+    if (!guild.me?.hasPermission('MANAGE_MESSAGES') && typeof cachedChannel.permissionOverwrites.find(p => p.allow.has('MANAGE_MESSAGES')) === 'undefined') continue
     if (cachedChannel.type !== 'text') continue
     const nonTypedChannel: any = cachedChannel
     const channel: TextChannel = nonTypedChannel
