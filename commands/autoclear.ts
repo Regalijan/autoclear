@@ -1,6 +1,6 @@
 import { Command } from 'discord-akairo'
 import { Message, TextChannel } from 'discord.js'
-import { lokiConnector } from '../loki'
+import db from '../database'
 
 export default class AutoclearCommand extends Command {
   public constructor () {
@@ -40,20 +40,18 @@ export default class AutoclearCommand extends Command {
   }
 
   public async exec (message: Message, { switcher, interval, channel }: { switcher: string, interval: number, channel: TextChannel }): Promise<void> {
-    const guildsConnector = lokiConnector.addCollection('autoclear')
     if (message.guild === null) {
       await message.channel.send('Something went wrong... `Details: message.guild is undefined`')
       return
     }
+    if ((await db.query('SELECT * FROM channels WHERE channel = $1;', [channel.id])).rowCount > 0) {
+      await message.channel.send('This channel is already set up to autoclear, please disable it before modifying it!')
+    }
 
     switch (switcher.toLowerCase()) {
       case 'enable':
-        if (guildsConnector.findOne({ channel: channel.id }) !== null) {
-          await message.channel.send('This channel already has autoclear enabled on it, disable it if you want to change the interval.')
-          break
-        }
-        const addSuccess = guildsConnector.insertOne({ guild: message.guild.id, channel: channel.id, interval: interval * 60000, lastRan: Date.now() })
-        if (typeof addSuccess === 'undefined') {
+        const enableSuccess = await db.query('INSERT INTO channels (guild,channel,interval) VALUES ($1,$2,$3);', [message.guild.id, channel.id, interval]).catch(e => console.error(e))
+        if (typeof enableSuccess === 'undefined') {
           await message.channel.send('An error occured when saving settings - try again.')
           return
         }
@@ -61,12 +59,8 @@ export default class AutoclearCommand extends Command {
         break
 
       case 'disable':
-        if (guildsConnector.findOne({ channel: channel.id }) === null) {
-          await message.channel.send('This channel does not have autoclear set up.')
-          break
-        }
-        guildsConnector.findAndRemove({ channel: channel.id })
-        await message.channel.send(`Autoclear unset for <#${channel.id}>.`)
+        await db.query('DELETE FROM channels WHERE channel = $1 AND guild = $2;', [channel.id, message.guild.id])
+        await message.channel.send(`<#${channel.id}> will no longer autoclear.`)
         break
 
       default:

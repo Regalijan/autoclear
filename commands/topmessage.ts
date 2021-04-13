@@ -32,8 +32,10 @@ export default class TopMessageCommand extends Command {
   }
 
   public async exec (message: Message, { channel, json }: { channel: TextChannel, json: string }): Promise<void> {
-    const embedBody = JSON.parse(json).catch(() => {})
-    if (typeof embedBody === 'undefined') {
+    let embedBody: any
+    try {
+      embedBody = JSON.parse(json)
+    } catch {
       await message.channel.send('Invalid JSON provided!')
       return
     }
