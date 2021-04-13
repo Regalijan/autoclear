@@ -6,6 +6,7 @@ This bot was made for Node `15.x` but should work fine on `14.x` (anything lower
 - Create a file in the directory named `.env`
 - Set `BTKN` to your bot token
 - Set `GLOBALPREFIX` to what the prefix should be for all servers without a custom one.
+- Set the database credentials: `DBU: User`, `DBPASS: Password`, `DBN: Database name`, `DBH: Host address`
 
 ## Commands
 - `ac!ping` This better be obvious
