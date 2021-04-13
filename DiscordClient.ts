@@ -1,7 +1,7 @@
 import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo'
 import { join } from 'path'
 import dotenv from 'dotenv'
-import { lokiConnector } from './loki'
+import db from './database'
 import { TextChannel } from 'discord.js'
 
 dotenv.config()
@@ -42,29 +42,31 @@ bot.once('ready', function () {
   console.log(`Shard ${bot.shard?.ids[0]} ready with ${bot.guilds.cache.size} guilds.`)
 })
 
+db.connect().catch(e => {
+  console.error(e)
+  process.exit()
+})
+
 setTimeout(async function (): Promise<void> {
   await bot.user?.setPresence({ activity: { type: 'PLAYING', name: 'message eating contest.' } })
   return
 }, 10000)
 
-setInterval(async function (): Promise<void> {
-  const autoclearCol = lokiConnector.addCollection('autoclear')
-  const autoclearData = autoclearCol.find({ lastRan: { $gt: Date.now() + 1800000 }})
-  for (let i = 0; i < autoclearData.length; i++) {
-    const guild = bot.guilds.cache.find(g => g.id === autoclearData[i].guild)
+setInterval(async function (): Promise<void>  {
+  const staleChannels = await db.query('SELECT * FROM channels WHERE last_ran > $1 + 1800000;', [Date.now()]).catch(e => console.error(e))
+  if (typeof staleChannels === 'undefined') return
+  for (let i = 0; i < staleChannels.rowCount; i++) {
+    const guild = bot.guilds.cache.find(g => g.id === staleChannels.rows[i].guild)
     if (typeof guild === 'undefined') continue
-    const cachedChannel = guild.channels.cache.find(c => c.id === autoclearData[i].channel)
-    if (typeof cachedChannel === 'undefined') continue
-    if (typeof cachedChannel.permissionOverwrites.find(p => p.deny.has('MANAGE_MESSAGES')) !== 'undefined') continue
-    if (!guild.me?.hasPermission('MANAGE_MESSAGES') && typeof cachedChannel.permissionOverwrites.find(p => p.allow.has('MANAGE_MESSAGES')) === 'undefined') continue
-    if (cachedChannel.type !== 'text') continue
-    const nonTypedChannel: any = cachedChannel
-    const channel: TextChannel = nonTypedChannel
+    const untypedChannel: any = guild.channels.cache.find(c => c.id === staleChannels.rows[i].channel)
+    if (typeof untypedChannel === 'undefined') continue
+    const channel: TextChannel = untypedChannel
+    if (channel.permissionOverwrites.find(p => p.deny.has('MANAGE_MESSAGES'))) continue
+    if (!guild.me?.hasPermission('MANAGE_MESSAGES') && !channel.permissionOverwrites.find(p => p.allow.has('MANAGE_MESSAGES'))) continue
+    if ((guild.me?.hasPermission('READ_MESSAGE_HISTORY') && !channel.permissionOverwrites.find(p => p.deny.has('READ_MESSAGE_HISTORY'))) || channel.permissionOverwrites.find(p => p.allow.has('READ_MESSAGE_HISTORY'))) {
+      await channel.messages.fetch({ limit: 500 })
+    }
     await channel.bulkDelete(500, true)
-    autoclearData[i].lastRan = Date.now()
-    autoclearCol.update(autoclearData[i])
-    const embed = lokiConnector.addCollection('topMessages').findOne({ channel: channel.id })
-    if (embed === null) return
-    await channel.send(embed)
+    await db.query('UPDATE channels SET last_ran = $1 WHERE channel = $2;', [Date.now(), channel.id]).catch(e => console.error(e))
   }
 }, 60000)
