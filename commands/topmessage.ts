@@ -1,6 +1,6 @@
 import { Command } from 'discord-akairo'
 import { Message, MessageEmbed, TextChannel } from 'discord.js'
-import { lokiConnector } from '../loki'
+import db from '../database'
 
 export default class TopMessageCommand extends Command {
   public constructor () {
@@ -44,8 +44,15 @@ export default class TopMessageCommand extends Command {
       await message.channel.send('An error occured when parsing the body? Do all of the properties exist on a Discord embed?')
       return
     }
-    const topMessageDoc = lokiConnector.addCollection('topMessages')
-    topMessageDoc.insertOne({ guild: message.guild?.id, channel: channel.id, embed: embed })
-    await message.channel.send('Embed set!')
+    if ((await db.query('SELECT * FROM channels WHERE channel = $1 AND guild = $2;', [channel.id, message.guild?.id])).rowCount === 0) {
+      await message.channel.send('Autoclear was not set on this channel, please enable it first!')
+      return
+    }
+    const insertSuccess = await db.query('UPDATE channels SET pinned_message = $1 WHERE channel = $2 AND guild = $3;', [embedBody, channel.id, message.guild?.id]).catch(e => console.error(e))
+    if (typeof insertSuccess === 'undefined') {
+      await message.channel.send('An error occured when saving settings - try again.')
+      return
+    }
+    await message.channel.send(`Enabled pinned message for <#${channel.id}>.`)
   }
 }
