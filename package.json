@@ -27,6 +27,7 @@
     "discord-akairo": "^8.1.0",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1"
   }
