@@ -44,12 +44,13 @@ export default class AutoclearCommand extends Command {
       await message.channel.send('Something went wrong... `Details: message.guild is undefined`')
       return
     }
-    if ((await db.query('SELECT * FROM channels WHERE channel = $1;', [channel.id])).rowCount > 0) {
-      await message.channel.send('This channel is already set up to autoclear, please disable it before modifying it!')
-    }
 
     switch (switcher.toLowerCase()) {
       case 'enable':
+        if ((await db.query('SELECT * FROM channels WHERE channel = $1;', [channel.id])).rowCount > 0) {
+          await message.channel.send('This channel is already set up to autoclear, please disable it before modifying it!')
+          return
+        }
         const enableSuccess = await db.query('INSERT INTO channels (guild,channel,interval) VALUES ($1,$2,$3);', [message.guild.id, channel.id, interval]).catch(e => console.error(e))
         if (typeof enableSuccess === 'undefined') {
           await message.channel.send('An error occured when saving settings - try again.')
