@@ -33,7 +33,7 @@ export default class AutoclearCommand extends Command {
       channel: 'guild',
       clientPermissions: ['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY', 'SEND_MESSAGES'],
       cooldown: 5000,
-      description: { about: 'Toggles autoclear for specified channel', usage: '<enable/disable> <channel>' },
+      description: { about: 'Toggles autoclear for specified channel', usage: '<enable/disable> <interval> <channel>\nSubstitute any number for interval when disabling.' },
       ratelimit: 1,
       userPermissions: ['MANAGE_GUILD']
     })
