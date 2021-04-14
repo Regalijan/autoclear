@@ -1,6 +1,7 @@
 import { ShardingManager } from 'discord.js'
 import { join } from 'path'
 import dotenv from 'dotenv'
+import WebServer from './http'
 
 dotenv.config()
 if (typeof process.env.BTKN === 'undefined') {
@@ -21,3 +22,7 @@ shardingManager.on('shardCreate', function (shard) {
 })
 
 shardingManager.spawn()
+
+if (typeof process.env.WEBPORT !== 'undefined' && !isNaN(parseInt(process.env.WEBPORT))) {
+  WebServer(parseInt(process.env.WEBPORT), shardingManager)
+}
