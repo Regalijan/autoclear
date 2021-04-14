@@ -53,7 +53,7 @@ setTimeout(async function (): Promise<void> {
 }, 10000)
 
 setInterval(async function (): Promise<void>  {
-  const staleChannels = await db.query('SELECT * FROM channels WHERE last_ran > $1 + 1800000;', [Date.now()]).catch(e => console.error(e))
+  const staleChannels = await db.query('SELECT * FROM channels WHERE CAST(last_ran AS bigint) > CAST($1 AS bigint) + 1800000;', [Date.now()]).catch(e => console.error(e))
   if (typeof staleChannels === 'undefined') return
   for (let i = 0; i < staleChannels.rowCount; i++) {
     if (staleChannels.rows[i].last_ran + staleChannels.rows[i].interval < Date.now()) continue
