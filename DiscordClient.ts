@@ -67,24 +67,24 @@ setInterval(async function (): Promise<void>  {
     if ((!guild.me?.hasPermission('READ_MESSAGE_HISTORY') || channel.permissionOverwrites.find(p => p.deny.has('READ_MESSAGE_HISTORY'))) && !channel.permissionOverwrites.find(p => p.allow.has('READ_MESSAGE_HISTORY'))) continue
     while (channel.messages.cache.size > 0 && typeof channel.lastMessage?.createdTimestamp !== 'undefined' && channel.lastMessage.createdTimestamp > Date.now() - 1209600000) await channel.bulkDelete(100, true)
     await db.query('UPDATE channels SET last_ran = $1 WHERE channel = $2;', [Date.now(), channel.id]).catch(e => console.error(e))
-    if (typeof staleChannels.rows[i].pinned_message !== 'undefined') {
-      const embedData = JSON.parse(staleChannels.rows[i].pinned_message)
-      const embed = new MessageEmbed()
-        .setDescription(embedData.description?.toString() ?? '\u200B')
-      if (embedData.author?.name) embed.setAuthor(embedData.author.name.toString(), embedData.author.icon_url.toString(), embedData.author.url.toString())
-      if (embedData.title) embed.setTitle(embedData.title.toString())
-      if (Array.isArray(embedData.fields)) try {
-          embedData.fields.forEach(function (field: { name: string, value: string, inline: boolean | undefined }) {
-          if (field.name && field.value) embed.addField(field.name, field.value, field.inline)
-        })
-      } catch {}
-      if (embedData.image?.url) embed.setImage(embedData.image.url.toString())
-      if (embedData.footer?.text) embed.setFooter(embedData.footer.text.toString(), embedData.footer.icon_url?.toString())
-      if (embedData.thumbnail?.url) embed.setThumbnail(embedData.thumbnail.url.toString())
-      if (embedData.color) try {
-        embed.setColor(parseInt(embedData.color))
-      } catch {}
-      await channel.send(embed)
+    const pinnedMessage = await db.query('SELECT * FROM pinned_messages WHERE channel = $1;', [channel.id])
+    if (pinnedMessage.rowCount === 0) return
+    const embedData = pinnedMessage.rows[0]
+    if (!embedData.embed) {
+      await channel.send(embedData.description)
+      continue
     }
+    const embed = new MessageEmbed()
+      .setDescription(embedData.description)
+    if (embedData.author_name) embed.setAuthor(embedData.author_name, embedData.author_icon, embedData.author_url)
+    if (embedData.color) embed.setColor(embedData.color)
+    if (embedData.footer) embed.setFooter(embedData.footer, embedData.footer_icon)
+    if (embedData.image) embed.setImage(embedData.image)
+    if (embedData.thumbnail) embed.setThumbnail(embedData.thumbnail)
+    if (embedData.url) embed.setURL(embedData.url)
+    if (embedData.fields) embedData.fields.forEach(function (field: { name: string, value: string, inline: boolean | undefined } ) {
+      embed.addField(field.name, field.value, field.inline)
+    })
+    await channel.send(embed)
   }
 }, 60000)
