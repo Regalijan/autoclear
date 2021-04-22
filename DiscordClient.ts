@@ -65,7 +65,7 @@ setInterval(async function (): Promise<void>  {
     if (channel.permissionOverwrites.find(p => p.deny.has('MANAGE_MESSAGES'))) continue
     if (!guild.me?.hasPermission('MANAGE_MESSAGES') && !channel.permissionOverwrites.find(p => p.allow.has('MANAGE_MESSAGES'))) continue
     if ((!guild.me?.hasPermission('READ_MESSAGE_HISTORY') || channel.permissionOverwrites.find(p => p.deny.has('READ_MESSAGE_HISTORY'))) && !channel.permissionOverwrites.find(p => p.allow.has('READ_MESSAGE_HISTORY'))) continue
-    while (channel.messages.cache.size > 0 && typeof channel.lastMessage?.createdTimestamp !== 'undefined' && channel.lastMessage.createdTimestamp > Date.now() - 1209600000) await channel.bulkDelete(100, true)
+    while (channel.messages.cache.size > 0 && typeof channel.lastMessage?.createdTimestamp !== 'undefined' && channel.lastMessage.createdTimestamp > Date.now() - 1209600000) await channel.bulkDelete(100, true).catch(() => {})
     await db.query('UPDATE channels SET last_ran = $1 WHERE channel = $2;', [Date.now(), channel.id]).catch(e => console.error(e))
     const pinnedMessage = await db.query('SELECT * FROM pinned_messages WHERE channel = $1;', [channel.id])
     if (pinnedMessage.rowCount === 0) return
