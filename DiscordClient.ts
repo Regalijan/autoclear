@@ -65,26 +65,12 @@ setInterval(async function (): Promise<void>  {
     if (channel.permissionOverwrites.find(p => p.deny.has('MANAGE_MESSAGES'))) continue
     if (!guild.me?.hasPermission('MANAGE_MESSAGES') && !channel.permissionOverwrites.find(p => p.allow.has('MANAGE_MESSAGES'))) continue
     if ((!guild.me?.hasPermission('READ_MESSAGE_HISTORY') || channel.permissionOverwrites.find(p => p.deny.has('READ_MESSAGE_HISTORY'))) && !channel.permissionOverwrites.find(p => p.allow.has('READ_MESSAGE_HISTORY'))) continue
-    while (channel.messages.cache.size > 0 && typeof channel.lastMessage?.createdTimestamp !== 'undefined' && channel.lastMessage.createdTimestamp > Date.now() - 1209600000) await channel.bulkDelete(100, true).catch(() => {})
-    await db.query('UPDATE channels SET last_ran = $1 WHERE channel = $2;', [Date.now(), channel.id]).catch(e => console.error(e))
-    const pinnedMessage = await db.query('SELECT * FROM pinned_messages WHERE channel = $1;', [channel.id])
-    if (pinnedMessage.rowCount === 0) return
-    const embedData = pinnedMessage.rows[0]
-    if (!embedData.embed) {
-      await channel.send(embedData.description)
-      continue
+    while (channel.messages.cache.filter(msg => !msg.pinned).size > 0 && typeof channel.lastMessage?.createdTimestamp !== 'undefined' && channel.lastMessage.createdTimestamp > Date.now() - 1209600000) {
+      const fetchedMsgs = await channel.messages.fetch({ limit: 100 })
+      fetchedMsgs.forEach(async msg => {
+        if (!msg.pinned) await msg.delete()
+      })
     }
-    const embed = new MessageEmbed()
-      .setDescription(embedData.description)
-    if (embedData.author_name) embed.setAuthor(embedData.author_name, embedData.author_icon, embedData.author_url)
-    if (embedData.color) embed.setColor(embedData.color)
-    if (embedData.footer) embed.setFooter(embedData.footer, embedData.footer_icon)
-    if (embedData.image) embed.setImage(embedData.image)
-    if (embedData.thumbnail) embed.setThumbnail(embedData.thumbnail)
-    if (embedData.url) embed.setURL(embedData.url)
-    if (embedData.fields) embedData.fields.forEach(function (field: { name: string, value: string, inline: boolean | undefined } ) {
-      embed.addField(field.name, field.value, field.inline)
-    })
-    await channel.send(embed)
+    await db.query('UPDATE channels SET last_ran = $1 WHERE channel = $2;', [Date.now(), channel.id]).catch(e => console.error(e))
   }
 }, 60000)

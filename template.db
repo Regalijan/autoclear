@@ -35,30 +35,6 @@ CREATE TABLE public.channels (
 ALTER TABLE public.channels OWNER TO postgres;
 
 --
--- Name: pinned_messages; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.pinned_messages (
-    embed boolean NOT NULL,
-    description text NOT NULL,
-    author_name text,
-    author_icon text,
-    author_url text,
-    color text,
-    footer text,
-    footer_icon text,
-    image text,
-    thumbnail text,
-    title text,
-    url text,
-    fields text[],
-    channel text NOT NULL
-);
-
-
-ALTER TABLE public.pinned_messages OWNER TO postgres;
-
---
 -- Name: settings; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -75,14 +51,6 @@ ALTER TABLE public.settings OWNER TO postgres;
 --
 
 COPY public.channels (channel, guild, "interval", last_ran) FROM stdin;
-\.
-
-
---
--- Data for Name: pinned_messages; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.pinned_messages (embed, description, author_name, author_icon, author_url, color, footer, footer_icon, image, thumbnail, title, url, fields, channel) FROM stdin;
 \.
 
 
