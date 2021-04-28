@@ -68,7 +68,7 @@ setInterval(async function (): Promise<void>  {
     while (channel.messages.cache.filter(msg => !msg.pinned).size > 0 && typeof channel.lastMessage?.createdTimestamp !== 'undefined' && channel.lastMessage.createdTimestamp > Date.now() - 1209600000) {
       const fetchedMsgs = await channel.messages.fetch({ limit: 100 })
       fetchedMsgs.forEach(async msg => {
-        if (!msg.pinned) await msg.delete()
+        if (!msg.pinned && !msg.deleted) await msg.delete().catch(() => {})
       })
     }
     await db.query('UPDATE channels SET last_ran = $1 WHERE channel = $2;', [Date.now(), channel.id]).catch(e => console.error(e))
