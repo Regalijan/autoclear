@@ -33,19 +33,30 @@ export default class ClearCommand extends Command {
     let ch = channel
     if (message.channel.type !== 'text') return
     if (ch === null) ch = message.channel
-    if (amount > 200) {
-      await message.channel.send('Sorry, but the maximum amount of messages per clear is 200.')
+    if (amount > 100) {
+      await message.channel.send('Sorry, but the maximum amount of messages per clear is 100.')
       return
     }
-    let success = true
-    await ch.bulkDelete(amount + 1, true).catch(e => {
-      console.error(e)
-      success = false
+    if (ch.type !== 'text') {
+      await message.channel.send('I cannot purge from news channels or dms!')
+      return
+    }
+    if (!ch.client.user) {
+      await message.channel.send('An error occured when trying to execute this command! `Details: message.client.user is undefined`')
+      return
+    }
+    if (!ch.permissionsFor(ch.client.user)?.has('MANAGE_MESSAGES')) {
+      await message.channel.send('I cannot delete messages from this channel as I do not have the manage messages permission.')
+      return
+    }
+    const messages = await ch.messages.fetch({ limit: amount }).catch(e => console.error(e))
+    if (typeof messages === 'undefined') {
+      await message.channel.send('The messages in the channel could not be fetched!')
+      return
+    }
+    messages.forEach(async msg => {
+      if (!msg.deleted && !msg.pinned) await msg.delete({ reason: `Purge requested by ${message.author.tag} (${message.author.id})` })
     })
-    if (!success) {
-      await message.channel.send('An error occured when deleting the messages!')
-      return
-    }
     await message.channel.send(`${amount} messages deleted!`)
   }
 }
