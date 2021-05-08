@@ -1,3 +1,5 @@
+# Autoclear
+
 ## Quick start
 
 So you have your beautiful server and this wonderful bot you just found, what now? Set up channels of course.
