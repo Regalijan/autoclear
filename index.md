@@ -1,37 +1,42 @@
-## Welcome to GitHub Pages
+## Quick start
 
-You can use the [editor on GitHub](https://github.com/Wolftallemo/autoclear/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+So you have your beautiful server and this wonderful bot you just found, what now? Set up channels of course.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Commands
+- `ac!about` - About me, beep boop
+- `ac!autoclear <enable|disable> <minutes> <#channel>` - Enables or disables autoclearing on the specified channel every n minutes (minimum 30)
+- `ac!clear <amount> <#channel?>` - Clears `amount` messages from `#channel` (or the current channel if none specified, max 100 per command)
+- `ac!debug` - Displays some goodies that may or may not have a use
+- `ac!help <command>` - Finds information for the given command
+- `ac!ping` - Pong
+- `ac!setglobalstatus`** - Sets the status message globally (across all shards)
+- `ac!setstatus`** - Sets status for the current shard
 
-### Markdown
+** Owner only
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Self hosting guide
+Here be dragons, make sure you know what you are doing!
 
-```markdown
-Syntax highlighted code block
+### Install required tools
+1. Clone the repo
+2. Install NodeJS 16.x (15.x will work but it will be deprecated in the near future, not tested on 14.x but will probably still work)
+3. Install PostgreSQL 13
+4. `npm install`
 
-# Header 1
-## Header 2
-### Header 3
+### ENV variables
+- `DBH` - Database host, if on the same machine `localhost` will suffice
+- `DBPASS` - Database password, UNIX sockets have not been tested with this bot
+- `DBU` - Database username
+- `DBN` - Database name, this will need to be the same as the database you create later
+- `BTKN` - Bot token
+- `BOTOWNER` - Your user id
+- `GLOBALPREFIX` - The prefix which is recognized anywhere the bot is
 
-- Bulleted
-- List
+Now create a file named `.env` and add all of the values
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Wolftallemo/autoclear/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+### Get ready
+1. Create a new database user with the appropriate permissions
+2. Create a dedicated user account for the bot to run under
+3. Keep the bot alive somehow, whether it be a process manager or a systemd service
+4. Create a database and import the template
+5. `npx tsc` in the project root
