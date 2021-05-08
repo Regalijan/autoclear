@@ -7,6 +7,7 @@ So you have your beautiful server and this wonderful bot you just found, what no
 ## Commands
 - `ac!about` - About me, beep boop
 - `ac!autoclear <enable|disable> <minutes> <#channel>` - Enables or disables autoclearing on the specified channel every n minutes (minimum 30)
+- `ac!channels` - Displays all channels with autoclearing enabled
 - `ac!clear <amount> <#channel?>` - Clears `amount` messages from `#channel` (or the current channel if none specified, max 100 per command)
 - `ac!debug` - Displays some goodies that may or may not have a use
 - `ac!help <command>` - Finds information for the given command
