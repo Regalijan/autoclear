@@ -12,7 +12,7 @@ export default class DebugCommand extends Command {
     })
   }
 
-  public async exec (message: Message) {
+  public async exec (message: Message): Promise<void> {
     let gitInfo: Buffer
     try {
       gitInfo = execSync('git rev-parse HEAD', { cwd: join(__dirname, '..') })

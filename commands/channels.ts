@@ -11,7 +11,7 @@ export default class ChannelsCommand extends Command {
     })
   }
 
-  public async exec (message: Message) {
+  public async exec (message: Message): Promise<void> {
     const channels = await db.query('SELECT * FROM channels WHERE guild = $1;', [message.guild?.id]).catch(e => console.error(e))
     if (!channels) {
       await message.channel.send('An error occured when searching for channels.')
