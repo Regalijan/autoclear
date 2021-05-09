@@ -5,7 +5,7 @@ import db from '../database'
 export default class ChannelDeleteListener extends Listener {
   public constructor () {
     super('channelDelete', {
-      emitter: 'channelDelete',
+      emitter: 'client',
       event: 'channelDelete'
     })
   }
