@@ -69,7 +69,10 @@ setInterval(async function (): Promise<void>  {
       const fetchedMsgs = await channel.messages.fetch({ limit: 100 })
       const ids: string[] = []
       fetchedMsgs.forEach(async msg => {
-        if (!msg.pinned && !msg.deleted) ids.push(msg.id)
+        if (!msg.pinned && !msg.deleted && msg.createdTimestamp > Date.now() - 1209600000) ids.push(msg.id)
+      })
+      channel.messages.cache.forEach(msg => {
+        if (!ids.includes(msg.id) && !msg.pinned && !msg.deleted && msg.createdTimestamp > Date.now() - 1209600000) ids.push(msg.id)
       })
       await channel.bulkDelete(ids)
     }
