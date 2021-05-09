@@ -43,3 +43,6 @@ Now create a file named `.env` and add all of the values
 3. Keep the bot alive somehow, whether it be a process manager or a systemd service
 4. Create a database and import the template
 5. `npx tsc` in the project root
+
+## I need help
+There is no dedicated server for autoclear, but I am usually [available](https://discord.com/invite/cYakVbr)
