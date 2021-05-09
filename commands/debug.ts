@@ -31,6 +31,7 @@ export default class DebugCommand extends Command {
         { name: 'Logical Cores', value: cpus().length },
         { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed}` }
       )
+    if (message.member?.displayColor) embed.setColor(message.member.displayColor)
     await message.channel.send(embed)
   }
 }
