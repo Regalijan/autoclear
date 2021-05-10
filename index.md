@@ -12,6 +12,7 @@ So you have your beautiful server and this wonderful bot you just found, what no
 - `ac!debug` - Displays some goodies that may or may not have a use
 - `ac!help <command>` - Finds information for the given command
 - `ac!ping` - Pong
+- `ac!prefix <prefix | null>` - Sets the prefix for the server ("null" clears it)
 - `ac!setglobalstatus`** - Sets the status message globally (across all shards)
 - `ac!setstatus`** - Sets status for the current shard
 
