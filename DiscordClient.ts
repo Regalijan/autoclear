@@ -2,7 +2,7 @@ import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo'
 import { join } from 'path'
 import dotenv from 'dotenv'
 import db from './database'
-import { MessageEmbed, TextChannel } from 'discord.js'
+import { Message, TextChannel } from 'discord.js'
 
 dotenv.config()
 
@@ -12,7 +12,15 @@ class DiscordClient extends AkairoClient {
     blockBots: true,
     blockClient: true,
     directory: join(__dirname, 'commands'),
-    prefix: process.env.GLOBALPREFIX
+    prefix: async function (message: Message): Promise<string[]> {
+      const prefixes: string[] = []
+      if (process.env.GLOBALPREFIX) prefixes.push(process.env.GLOBALPREFIX)
+      if (prefixes.length === 0) prefixes.push('ac!')
+      if (!message.guild) return prefixes
+      const data = await db.query('SELECT * FROM settings WHERE guild = $1;', [message.guild.id])
+      if (data.rowCount > 0 && data.rows[0].prefix) prefixes.push(data.rows[0].prefix)
+      return prefixes
+    }
   })
 
   private readonly listenerHandler: ListenerHandler = new ListenerHandler(this, {
