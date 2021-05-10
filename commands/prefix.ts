@@ -10,11 +10,6 @@ export default class PrefixCommand extends Command {
         {
           default: null,
           id: 'pref',
-          prompt: {
-            cancel: 'Command cancelled - prefix unchanged',
-            start: 'What should the prefix be?',
-            timeout: 'You managed to lose to the snail, try again when you can actually type fast enough.',
-          },
           type: 'string'
         }
       ],
