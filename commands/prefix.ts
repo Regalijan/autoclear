@@ -34,8 +34,9 @@ export default class PrefixCommand extends Command {
     if (!pref) {
       let prefstr = 'The prefix for this server is'
       if (existingPrefix.rowCount === 0) {
-        if (Array.isArray(this.prefix)) prefstr += ` ${this.prefix[0]}`
-        else prefstr += ` ${this.prefix}`
+        if (Array.isArray(this.prefix) && this.prefix[0]) prefstr += ` ${this.prefix[0]}`
+        else if (this.prefix) prefstr += ` ${this.prefix}`
+        else prefstr += ` ${process.env.GLOBALPREFIX}`
       }
       if (existingPrefix.rows[0]?.prefix) {
         prefstr += ` ${existingPrefix.rows[0].prefix}`
