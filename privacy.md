@@ -27,4 +27,4 @@ We do not store anything identifying specific users on disk, so you can't becaus
 
 If you want information regarding your server deleted, you may contact the [bot owner](https://discord.com/users/396347223736057866) (you must be the server owner)
 
-This privacy statement only applies to the publicly hosted version and not any self hosted copy that may exist.
+### This privacy statement only applies to the publicly hosted version and not any self hosted copy that may exist.
