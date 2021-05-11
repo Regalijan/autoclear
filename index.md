@@ -47,3 +47,6 @@ Now create a file named `.env` and add all of the values
 
 ## I need help
 There is no dedicated server for autoclear, but I am usually [available](https://discord.com/invite/cYakVbr)
+
+## Privacy Policy
+Please see the [privacy policy page](https://autoclear.wolftallemo.com/privacy)
