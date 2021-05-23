@@ -50,3 +50,6 @@ There is no dedicated server for autoclear, but I am usually [available](https:/
 
 ## Privacy Policy
 Please see the [privacy policy page](https://autoclear.wolftallemo.com/privacy)
+
+## Terms of Service
+Please see the [terms of service page](https://autoclear.wolftallemo.com/terms)
