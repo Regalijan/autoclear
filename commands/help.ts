@@ -9,7 +9,7 @@ export default class HelpCommand extends Command {
     })
   }
 
-  public async exec (message: Message, { command }: { command: Command }): Promise<void> {
+  public async exec (message: Message): Promise<void> {
     await message.channel.send('Documentation can be found at https://autoclear.wolftallemo.com')
   }
 }
