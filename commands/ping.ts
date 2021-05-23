@@ -4,7 +4,9 @@ export default class PingCommand extends Command {
   public constructor () {
     super('ping', {
       aliases: ['ping'],
-      description: { about: 'Gets bot ping', usage: '' }
+      cooldown: 2500,
+      description: { about: 'Gets bot ping', usage: '' },
+      ratelimit: 1
     })
   }
 
