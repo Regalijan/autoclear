@@ -6,7 +6,9 @@ export default class AboutCommand extends Command {
     super('about', {
       aliases: ['about'],
       channel: 'guild',
-      description: { about: 'Shows about panel', usage: '' }
+      cooldown: 2000,
+      description: { about: 'Shows about panel', usage: '' },
+      ratelimit: 1
     })
   }
 
