@@ -10,7 +10,7 @@ So you have your beautiful server and this wonderful bot you just found, what no
 - `ac!channels` - Displays all channels with autoclearing enabled
 - `ac!clear <amount> <#channel?>` - Clears `amount` messages from `#channel` (or the current channel if none specified, max 100 per command)
 - `ac!debug` - Displays some goodies that may or may not have a use
-- `ac!help <command>` - Finds information for the given command
+- `ac!help` - Finds information for the given command
 - `ac!ping` - Pong
 - `ac!prefix <prefix | null>` - Sets the prefix for the server ("null" clears it)
 - `ac!setglobalstatus`** - Sets the status message globally (across all shards)
