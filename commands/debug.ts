@@ -8,7 +8,9 @@ export default class DebugCommand extends Command {
   public constructor () {
     super('debug', {
       aliases: ['debug', 'info'],
-      description: { about: 'Outputs debug information', usage: '' }
+      cooldown: 5000,
+      description: { about: 'Outputs debug information', usage: '' },
+      ratelimit: 1
     })
   }
 

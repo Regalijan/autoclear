@@ -7,7 +7,9 @@ export default class ChannelsCommand extends Command {
     super('channels', {
       aliases: ['channels', 'list'],
       channel: 'guild',
-      description: { about: 'Displays all channels where autoclearing is enabled', usage: '' }
+      cooldown: 10000,
+      description: { about: 'Displays all channels where autoclearing is enabled', usage: '' },
+      ratelimit: 1
     })
   }
 
