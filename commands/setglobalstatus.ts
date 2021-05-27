@@ -16,7 +16,9 @@ export default class SetGlobalStatusCommand extends Command {
           type: 'string'
         }
       ],
+      cooldown: 30000,
       description: { about: 'Sets status across all shards', usage : '<status>' },
+      ratelimit: 1
       ownerOnly: true
     })
   }

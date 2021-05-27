@@ -14,9 +14,8 @@ export default class PrefixCommand extends Command {
         }
       ],
       channel: 'guild',
-      cooldown: 60000,
+      cooldown: 45000,
       description: { about: 'Sets prefix for the guild', usage: '<prefix>' },
-
       ratelimit: 1
     })
   }
