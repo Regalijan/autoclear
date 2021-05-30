@@ -2,7 +2,7 @@ import { Command } from 'discord-akairo'
 import { Message, MessageEmbed } from 'discord.js'
 import { execSync } from 'child_process'
 import { join } from 'path'
-import { cpus } from 'os'
+import { cpus, version } from 'os'
 
 export default class DebugCommand extends Command {
   public constructor () {
@@ -26,7 +26,7 @@ export default class DebugCommand extends Command {
       .setAuthor(message.client.user?.tag, message.client.user?.displayAvatarURL({ dynamic: true }))
       .addFields(
         { name: 'Owner', value: (await message.client.fetchApplication()).owner },
-        { name: 'System Architecture', value: process.arch },
+        { name: 'Operating System', value: version() },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' },
         { name: 'Commit', value: gitInfo },
         { name: 'Node Version', value: process.version },
