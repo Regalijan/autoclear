@@ -23,7 +23,7 @@ export default class DebugCommand extends Command {
       return
     }
 
-    let memusage = process.memoryUsage().heapUsed / 1024 / 1024
+    let memusage = Math.floor(process.memoryUsage().heapUsed / 1024 / 1024)
     let memstring = `${memusage} MB`
     if (memusage > 1024) {
       let gigs = Math.floor(memusage / 1024)
