@@ -22,6 +22,14 @@ export default class DebugCommand extends Command {
       await message.channel.send('An error occured when fetching information! `Details: git rev-parse HEAD did not execute correctly`')
       return
     }
+
+    let memusage = process.memoryUsage().heapUsed / 1024 / 1024
+    let memstring = `${memusage} MB`
+    if (memusage > 1024) {
+      let gigs = Math.floor(memusage / 1024)
+      memusage %= gigs * 1024
+      memstring = `${gigs} GB ${memusage} MB`
+    }
     const embed = new MessageEmbed()
       .setAuthor(message.client.user?.tag, message.client.user?.displayAvatarURL({ dynamic: true }))
       .addFields(
@@ -31,7 +39,8 @@ export default class DebugCommand extends Command {
         { name: 'Commit', value: gitInfo },
         { name: 'Node Version', value: process.version },
         { name: 'Logical Cores', value: cpus().length },
-        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed}` }
+        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed}` },
+        { name: 'Memory Usage', value: memstring }
       )
     if (message.member?.displayColor) embed.setColor(message.member.displayColor)
     await message.channel.send(embed)
