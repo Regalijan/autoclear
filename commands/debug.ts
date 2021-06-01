@@ -39,7 +39,7 @@ export default class DebugCommand extends Command {
         { name: 'Commit', value: gitInfo },
         { name: 'Node Version', value: process.version },
         { name: 'Logical Cores', value: cpus().length },
-        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed}` },
+        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed} MHz` },
         { name: 'Memory Usage', value: memstring }
       )
     if (message.member?.displayColor) embed.setColor(message.member.displayColor)
