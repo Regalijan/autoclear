@@ -17,8 +17,8 @@ class DiscordClient extends AkairoClient {
       if (process.env.GLOBALPREFIX) prefixes.push(process.env.GLOBALPREFIX)
       if (prefixes.length === 0) prefixes.push('ac!')
       if (!message.guild) return prefixes
-      const data = await db.query('SELECT * FROM settings WHERE guild = $1;', [message.guild.id])
-      if (data.rowCount > 0 && data.rows[0].prefix) prefixes.push(data.rows[0].prefix)
+      const data = await db.query('SELECT * FROM settings WHERE guild = $1;', [message.guild.id]).catch(e => console.error(e))
+      if (data && data.rowCount > 0 && data.rows[0].prefix) prefixes.push(data.rows[0].prefix)
       return prefixes
     }
   })
