@@ -28,10 +28,11 @@ export default class ChannelsCommand extends Command {
     embed.setTitle(`Autoclearing channels for ${message.guild?.name}`)
     let description = ''
     channels.rows.forEach(row => {
-      description += `<#${row.channel}>\n`
+      description += `<#${row.channel}> - ${row.interval} minutes\n`
     })
     embed.setDescription(description)
     embed.setTimestamp()
+    if (message.member?.displayColor) embed.setColor(message.member.displayColor)
     await message.channel.send(embed)
   }
 }
