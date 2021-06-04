@@ -87,7 +87,7 @@ setInterval(async function (): Promise<void>  {
       channel.messages.cache.forEach(msg => {
         if (!ids.includes(msg.id) && !msg.pinned && !msg.deleted && msg.createdTimestamp > Date.now() - 1209600000) ids.push(msg.id)
       })
-      await channel.bulkDelete(ids)
+      await channel.bulkDelete(ids).catch(e => console.error(e))
     }
     await db.query('UPDATE channels SET last_ran = $1 WHERE channel = $2;', [Date.now(), channel.id]).catch(e => console.error(e))
   }
