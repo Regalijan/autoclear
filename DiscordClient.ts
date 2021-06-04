@@ -69,14 +69,19 @@ setInterval(async function (): Promise<void>  {
     if (typeof guild === 'undefined') continue
     const untypedChannel: any = guild.channels.cache.find(c => c.id === staleChannels.rows[i].channel)
     if (typeof untypedChannel === 'undefined') continue
+    const user = guild.client.user?.id ?? (await guild.members.fetch((await guild.client.fetchApplication()).id)).id
     const channel: TextChannel = untypedChannel
-    if (channel.permissionOverwrites.find(p => p.deny.has('MANAGE_MESSAGES'))) continue
-    if (!guild.me?.hasPermission('MANAGE_MESSAGES') && !channel.permissionOverwrites.find(p => p.allow.has('MANAGE_MESSAGES'))) continue
-    if ((!guild.me?.hasPermission('READ_MESSAGE_HISTORY') || channel.permissionOverwrites.find(p => p.deny.has('READ_MESSAGE_HISTORY'))) && !channel.permissionOverwrites.find(p => p.allow.has('READ_MESSAGE_HISTORY'))) continue
+    if (!channel.permissionsFor(user)?.has('MANAGE_MESSAGES') || !channel.permissionsFor(user)?.has('READ_MESSAGE_HISTORY')) continue
+    try {
+      await channel.messages.fetch({ limit: 20 })
+    } catch (e) {
+      console.error(e)
+      continue
+    }
     while (channel.messages.cache.filter(msg => !msg.pinned).size > 0 && typeof channel.lastMessage?.createdTimestamp !== 'undefined' && channel.lastMessage.createdTimestamp > Date.now() - 1209600000) {
       const fetchedMsgs = await channel.messages.fetch({ limit: 100 })
       const ids: string[] = []
-      fetchedMsgs.forEach(async msg => {
+      fetchedMsgs.forEach(msg => {
         if (!msg.pinned && !msg.deleted && msg.createdTimestamp > Date.now() - 1209600000) ids.push(msg.id)
       })
       channel.messages.cache.forEach(msg => {
