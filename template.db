@@ -27,8 +27,9 @@ SET default_table_access_method = heap;
 CREATE TABLE public.channels (
     channel text NOT NULL,
     guild text NOT NULL,
-    "interval" bigint NOT NULL,
-    last_ran bigint NOT NULL
+    "interval" bigint,
+    last_ran bigint,
+    is_insta boolean NOT NULL
 );
 
 
@@ -50,7 +51,7 @@ ALTER TABLE public.settings OWNER TO postgres;
 -- Data for Name: channels; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.channels (channel, guild, "interval", last_ran) FROM stdin;
+COPY public.channels (channel, guild, "interval", last_ran, is_insta) FROM stdin;
 \.
 
 
