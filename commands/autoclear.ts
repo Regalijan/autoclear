@@ -51,6 +51,10 @@ export default class AutoclearCommand extends Command {
           await message.channel.send('This channel is already set up to autoclear, please disable it before modifying it!')
           return
         }
+        if (interval < 30) {
+          await message.channel.send('The minimum interval for autoclearing channels is 30 minutes, try again.')
+          return
+        }
         const enableSuccess = await db.query('INSERT INTO channels (guild,channel,interval,last_ran) VALUES ($1,$2,$3,$4);', [message.guild.id, channel.id, interval, Date.now()]).catch(e => console.error(e))
         if (typeof enableSuccess === 'undefined') {
           await message.channel.send('An error occured when saving settings - try again.')
