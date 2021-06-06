@@ -71,7 +71,7 @@ setInterval(async function (): Promise<void>  {
     if (typeof untypedChannel === 'undefined') continue
     const user = guild.client.user?.id ?? (await guild.members.fetch((await guild.client.fetchApplication()).id)).id
     const channel: TextChannel = untypedChannel
-    if (!channel.permissionsFor(user)?.has('MANAGE_MESSAGES') || !channel.permissionsFor(user)?.has('READ_MESSAGE_HISTORY')) continue
+    if (!channel.permissionsFor(user)?.has(['MANAGE_MESSAGES','READ_MESSAGE_HISTORY'])) continue
     try {
       await channel.messages.fetch({ limit: 20 })
     } catch (e) {
