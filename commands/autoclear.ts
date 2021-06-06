@@ -55,7 +55,7 @@ export default class AutoclearCommand extends Command {
           await message.channel.send('The minimum interval for autoclearing channels is 30 minutes, try again.')
           return
         }
-        const enableSuccess = await db.query('INSERT INTO channels (guild,channel,interval,last_ran) VALUES ($1,$2,$3,$4);', [message.guild.id, channel.id, interval, Date.now()]).catch(e => console.error(e))
+        const enableSuccess = await db.query('INSERT INTO channels (guild,channel,interval,is_insta) VALUES ($1,$2,$3,false);', [message.guild.id, channel.id, interval]).catch(e => console.error(e))
         if (typeof enableSuccess === 'undefined') {
           await message.channel.send('An error occured when saving settings - try again.')
           return
@@ -64,7 +64,7 @@ export default class AutoclearCommand extends Command {
         break
 
       case 'disable':
-        await db.query('DELETE FROM channels WHERE channel = $1 AND guild = $2;', [channel.id, message.guild.id])
+        await db.query('DELETE FROM channels WHERE channel = $1 AND guild = $2 AND is_insta = false;', [channel.id, message.guild.id])
         await message.channel.send(`<#${channel.id}> will no longer autoclear.`)
         break
 
