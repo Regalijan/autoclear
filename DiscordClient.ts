@@ -32,6 +32,7 @@ class DiscordClient extends AkairoClient {
       ownerID: process.env.BOTOWNER ?? '396347223736057866'
     }, {
       disableMentions: 'everyone',
+      presence: { activity: { type: 'PLAYING', name: 'message eating contest.' } },
       ws: { intents: ['GUILDS', 'GUILD_MESSAGES'] }
     })
     this.commandHandler.useListenerHandler(this.listenerHandler)
@@ -40,7 +41,7 @@ class DiscordClient extends AkairoClient {
   }
 }
 
-const bot = new DiscordClient({ presence: { activity: { type: 'PLAYING', name: 'message eating contest.' } } })
+const bot = new DiscordClient()
 bot.login(process.env.BTKN).catch(e => {
   console.error(e)
   process.exit()
