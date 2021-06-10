@@ -18,6 +18,15 @@ So you have your beautiful server and this wonderful bot you just found, what no
 
 ** Owner only
 
+## FAQ
+- "I still see messages in a channel even though I set it to clear" - Run `ac!clear` on the channel to catch the remainders, any new messages should be picked up. This occurs when the bot has recently restarted.
+
+- "The bot isn't responding" - Make sure the bot has permission to send messages in the channel you are running commands.
+
+- "Messages aren't being deleted" - Make sure the bot has the manage messages permission so that it can delete messages.
+
+- "Is there a premium version" - Not at the moment.
+
 ## Self hosting guide
 Here be dragons, make sure you know what you are doing!
 
