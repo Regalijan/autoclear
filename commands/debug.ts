@@ -1,5 +1,5 @@
 import { Command } from 'discord-akairo'
-import { Message, MessageEmbed } from 'discord.js'
+import { Message, MessageEmbed, ShardClientUtil } from 'discord.js'
 import { execSync } from 'child_process'
 import { join } from 'path'
 import { cpus, version } from 'os'
@@ -42,6 +42,8 @@ export default class DebugCommand extends Command {
         { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed} MHz` },
         { name: 'Memory Usage', value: memstring }
       )
+    if (message.guild) embed.addField('Server ID', message.guild.id)
+    if (this.client.shard) embed.addField('Shard', message.guild ? ShardClientUtil.shardIDForGuildID(message.guild.id, this.client.shard.count).toString() : '0')
     if (message.member?.displayColor) embed.setColor(message.member.displayColor)
     await message.channel.send(embed)
   }
