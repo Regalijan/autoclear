@@ -32,7 +32,7 @@ class DiscordClient extends AkairoClient {
       ownerID: process.env.BOTOWNER ?? '396347223736057866'
     }, {
       disableMentions: 'everyone',
-      presence: { activity: { type: 'PLAYING', name: 'message eating contest.' } },
+      presence: { activity: { type: 'COMPETING', name: 'message eating contest.' } },
       ws: { intents: ['GUILDS', 'GUILD_MESSAGES'] }
     })
     this.commandHandler.useListenerHandler(this.listenerHandler)
