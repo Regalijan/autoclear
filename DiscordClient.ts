@@ -50,6 +50,10 @@ bot.once('ready', function () {
   console.log(`Shard ${bot.shard?.ids[0]} ready with ${bot.guilds.cache.size} guilds.`)
 })
 
+if (process.env.ENABLEDEBUG) bot.on('debug', function (info: string): void {
+  console.log(info)
+})
+
 db.connect().catch(e => {
   console.error(e)
   process.exit()
