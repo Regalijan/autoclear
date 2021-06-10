@@ -40,7 +40,7 @@ class DiscordClient extends AkairoClient {
   }
 }
 
-const bot = new DiscordClient()
+const bot = new DiscordClient({ presence: { activity: { type: 'PLAYING', name: 'message eating contest.' } } })
 bot.login(process.env.BTKN).catch(e => {
   console.error(e)
   process.exit()
@@ -58,11 +58,6 @@ db.connect().catch(e => {
   console.error(e)
   process.exit()
 })
-
-setTimeout(async function (): Promise<void> {
-  await bot.user?.setPresence({ activity: { type: 'PLAYING', name: 'message eating contest.' } })
-  return
-}, 10000)
 
 setInterval(async function (): Promise<void>  {
   const staleChannels = await db.query('SELECT * FROM channels WHERE is_insta = false AND last_ran < $1;', [Date.now() - 1800000]).catch(e => console.error(e))
