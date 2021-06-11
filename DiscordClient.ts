@@ -92,3 +92,18 @@ setInterval(async function (): Promise<void>  {
     await db.query('UPDATE channels SET last_ran = $1 WHERE channel = $2;', [Date.now(), channel.id]).catch(e => console.error(e))
   }
 }, 60000)
+
+process.on('SIGHUP', function () {
+  bot.destroy()
+  process.exit()
+})
+
+process.on('SIGINT', function () {
+  bot.destroy()
+  process.exit()
+})
+
+process.on('SIGTERM', function () {
+  bot.destroy()
+  process.exit()
+})
