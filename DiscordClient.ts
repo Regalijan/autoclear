@@ -1,53 +1,53 @@
-import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo'
-import { join } from 'path'
-import dotenv from 'dotenv'
+import { config as dotenv } from 'dotenv'
 import db from './database'
-import { Message, TextChannel } from 'discord.js'
+import { readdirSync } from 'fs'
+import { join } from 'path'
+import {
+  Client,
+  Collection,
+  CommandInteraction,
+  DMChannel,
+  GuildChannel,
+  Intents,
+  Interaction,
+  Message,
+  PermissionResolvable,
+  TextBasedChannelTypes,
+  TextChannel,
+  ThreadChannel
+} from 'discord.js'
 
-dotenv.config()
+dotenv()
 
-class DiscordClient extends AkairoClient {
-  private readonly commandHandler: CommandHandler = new CommandHandler(this, {
-    allowMention: true,
-    blockBots: true,
-    blockClient: true,
-    directory: join(__dirname, 'commands'),
-    prefix: async function (message: Message): Promise<string[]> {
-      const prefixes: string[] = []
-      if (process.env.GLOBALPREFIX) prefixes.push(process.env.GLOBALPREFIX)
-      if (prefixes.length === 0) prefixes.push('ac!')
-      if (!message.guild) return prefixes
-      const data = await db.query('SELECT * FROM settings WHERE guild = $1;', [message.guild.id]).catch(e => console.error(e))
-      if (data && data.rowCount > 0 && data.rows[0].prefix) prefixes.push(data.rows[0].prefix)
-      return prefixes
-    }
-  })
+const intCommands: Collection<string, {
+  name: string,
+  channels: TextBasedChannelTypes[],
+  permissions: PermissionResolvable[],
+  exec(interaction: CommandInteraction): Promise<void>
+}> = new Collection()
 
-  private readonly listenerHandler: ListenerHandler = new ListenerHandler(this, {
-    directory: join(__dirname, 'listeners')
-  })
+const intFiles = readdirSync(join(__dirname, 'commands')).filter(f => f.endsWith('.js'))
 
-  public constructor () {
-    super({
-      ownerID: process.env.BOTOWNER ?? '396347223736057866'
-    }, {
-      disableMentions: 'everyone',
-      presence: { activity: { type: 'COMPETING', name: 'message eating contest.' } },
-      ws: { intents: ['GUILDS', 'GUILD_MESSAGES'] }
-    })
-    this.commandHandler.useListenerHandler(this.listenerHandler)
-    this.listenerHandler.loadAll()
-    this.commandHandler.loadAll()
-  }
+for (const file of intFiles) {
+  const intCommand = require(`./commands/${file}`)
+  intCommands.set(intCommand.name, intCommand)
 }
 
-const bot = new DiscordClient()
-bot.login(process.env.BTKN).catch(e => {
+db.connect().catch(e => {
   console.error(e)
   process.exit()
 })
 
-bot.once('ready', function () {
+const bot = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
+})
+
+bot.login().catch(e => {
+  console.error(e)
+  process.exit()
+})
+
+bot.once('ready', function (): void {
   console.log(`Shard ${bot.shard?.ids[0]} ready with ${bot.guilds.cache.size} guilds.`)
 })
 
@@ -55,9 +55,38 @@ if (process.env.ENABLEDEBUG) bot.on('debug', function (info: string): void {
   console.log(info)
 })
 
-db.connect().catch(e => {
-  console.error(e)
-  process.exit()
+bot.on('message', async function (message: Message): Promise<void> {
+  if (message.channel.type === 'DM' || !message.deletable) return
+  const searchedChannel = await db.query('SELECT is_insta FROM channels WHERE channel = $1;', [message.channel.id]).catch(e => console.error(e))
+  if (!searchedChannel?.rowCount || !searchedChannel.rows[0].is_insta) return
+  await message.delete().catch(e => console.error(e))
+})
+
+bot.on('channelDelete', async function (channel: DMChannel | GuildChannel): Promise<void> {
+  if (channel.type !== 'GUILD_TEXT') return
+  const foundChannel = await db.query('SELECT channel FROM channels WHERE channel = $1;', [channel.id]).catch(e => console.error(e))
+  if (!foundChannel?.rowCount) return // Return if rowCount is zero or query failed
+  await db.query('DELETE FROM channels WHERE channel = $1;', [channel.id]).catch(e => console.error(e))
+})
+
+bot.on('interactionCreate', async function (int: Interaction): Promise<void> {
+  if (!int.isCommand() || !intCommands.has(int.commandName)) return
+  try {
+    const command = intCommands.get(int.commandName) // Hacky but whatever, require() is sort of a mess with ts
+    if (!command) throw Error('Command does not exist but <Collection>.has() returned true')
+    if (!int.member?.user?.id) throw Error('Interaction has no associated member')
+    if (!int.channel?.type || command?.channels.length && !command.channels.includes(int.channel?.type)) return
+    const commandUser = await int.guild?.members.fetch(int.member.user.id)
+    if (!commandUser) throw Error('Interaction has a member but member did not exist in guild')
+    if (command.permissions?.length && !commandUser.permissions.has(command.permissions)) {
+      await int.reply('You cannot run this command.')
+      return
+    }
+    await command.exec(int)
+  } catch (e) {
+    console.error(e)
+    await int.reply(`Oops! An error occured while running this command;\n\nIf you contact the developer, give them this information:\n${e}`).catch(e => console.error(e))
+  }
 })
 
 setInterval(async function (): Promise<void>  {
@@ -69,9 +98,10 @@ setInterval(async function (): Promise<void>  {
     if (typeof guild === 'undefined') continue
     const untypedChannel: any = guild.channels.cache.find(c => c.id === staleChannels.rows[i].channel)
     if (typeof untypedChannel === 'undefined') continue
-    const user = guild.client.user?.id ?? (await guild.members.fetch((await guild.client.fetchApplication()).id)).id
+    const user = bot.application?.id
+    if (!user) return
     const channel: TextChannel = untypedChannel
-    if (!channel.permissionsFor(user)?.has(['MANAGE_MESSAGES','READ_MESSAGE_HISTORY'])) continue
+    if (!channel.permissionsFor(user)?.has(['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'])) continue
     while (channel.messages.cache.filter(msg => !msg.pinned).size > 0 && typeof channel.lastMessage?.createdTimestamp !== 'undefined' && channel.lastMessage.createdTimestamp > Date.now() - 1209600000) {
       const fetchedMsgs = await channel.messages.fetch({ limit: 100 })
       const ids: string[] = []
@@ -87,12 +117,12 @@ setInterval(async function (): Promise<void>  {
   }
 }, 60000)
 
-process.on('SIGHUP', function () {
+process.on('SIGHUP', function (): void {
   bot.destroy()
   process.exit()
 })
 
-process.on('SIGINT', function () {
+process.on('SIGINT', function (): void {
   bot.destroy()
   process.exit()
 })

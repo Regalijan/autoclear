@@ -1,47 +1,32 @@
-import { Command } from 'discord-akairo'
-import { Message, ShardClientUtil } from 'discord.js'
+import { CommandInteraction, ShardClientUtil } from 'discord.js'
 
-export default class RestartCommand extends Command {
-  public constructor () {
-    super('restart', {
-      aliases: ['reboot', 'restart'],
-      args: [
-        {
-          id: 'server',
-          default: null
-        }
-      ],
-      cooldown: 120000,
-      description: { about: 'Restarts shard', usage: '<serverID?>' },
-      ownerOnly: true
-    })
-  }
-
-  public async exec (message: Message, { server }: { server: string | null }): Promise<void> {
-    if (!this.client.shard) {
-      await message.channel.send('This command is disabled as bot was started without sharding, did you modify the source code?')
-      return
-    }
-
-    if (message.channel.type === 'dm' || server === '--all') {
-      await message.channel.send('Initiating full restart...').catch(e => console.error(e))
-      try {
-        await this.client.shard.broadcastEval('this.destroy(); process.exit();')
-      } catch (e) {
-        console.error(e)
-        await message.channel.send(`Failed to send command: ${e}`).catch(e => console.error(e))
+export = {
+  name: 'restart',
+  channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
+  permissions: [],
+  async exec (i: CommandInteraction): Promise<void> {
+    if (i.options.getBoolean('allShards')) {
+      await i.reply('Restarting all shards...')
+      await i.client.shard?.broadcastEval(c => {
+        c.destroy()
+        process.exit()
+      })
+    } else {
+      if (i.options.getString('server')) {
+        // @ts-expect-error
+        await i.reply(`Restarting shard ${ShardClientUtil.shardIdForGuildId(i.options.getString('server'), i.client.shard?.count)}...`)
+        await i.client.shard?.broadcastEval(c => {
+          c.destroy()
+          process.exit()
+        }, {
+          // @ts-expect-error ?????? Didn't realize checking it beforehand still meant it could be null
+          shard: ShardClientUtil.shardIdForGuildId(i.options.getString('server'), i.client.shard.count)
+        })
+      } else {
+        await i.reply('Restarting current shard...')
+        i.client.destroy()
+        process.exit()
       }
-      return
-    }
-  
-    let shard: number
-    typeof server === 'string' ? shard = ShardClientUtil.shardIDForGuildID(server, this.client.shard.count) : message.guild ? shard = ShardClientUtil.shardIDForGuildID(message.guild.id, this.client.shard.count) : shard = 0
-    try {
-      await message.channel.send('Sending restart command...')
-      await this.client.shard.broadcastEval('this.destroy(); process.exit();', shard)
-    } catch (e) {
-      console.error(e)
-      await message.channel.send(`Failed to send command: ${e}`).catch(e => console.error(e))
     }
   }
 }

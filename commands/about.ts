@@ -1,27 +1,23 @@
-import { Command } from 'discord-akairo'
-import { Message, MessageEmbed } from 'discord.js'
+import { CommandInteraction, MessageEmbed } from 'discord.js'
 
-export default class AboutCommand extends Command {
-  public constructor () {
-    super('about', {
-      aliases: ['about'],
-      channel: 'guild',
-      cooldown: 2000,
-      description: { about: 'Shows about panel', usage: '' },
-      ratelimit: 1
-    })
-  }
-
-  public async exec (message: Message): Promise<void> {
-    const embed = new MessageEmbed()
-      .setAuthor(message.client.user?.tag, message.client.user?.displayAvatarURL())
-      .setColor(message.member?.displayColor ?? 3756250)
-      .setDescription('About')
-      .addFields(
-        { name: 'Owner', value: (await message.client.fetchApplication()).owner },
-        { name: 'Library', value: 'discord.js@12.5.3 + discord-akairo@8.1.0' },
+export = {
+  name: 'about',
+  channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
+  permissions: [],
+  async exec (i: CommandInteraction): Promise<void> {
+    const embed = new MessageEmbed({
+      author: {
+        name: i.client.user?.tag ?? 'Unknown',
+        iconURL: i.client.user?.displayAvatarURL({ dynamic: true })
+      },
+      color: 3756250,
+      description: 'About',
+      fields: [
+        { name: 'Owner', value: i.client.application?.owner?.toString() ?? 'Unknown'},
+        { name: 'Library', value: 'discord.js@13.0.0' },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' }
-      )
-    await message.channel.send(embed)
+      ]
+    })
+    await i.reply({ embeds: [embed] })
   }
 }

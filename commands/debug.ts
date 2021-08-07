@@ -1,28 +1,20 @@
-import { Command } from 'discord-akairo'
-import { Message, MessageEmbed, ShardClientUtil } from 'discord.js'
+import { CommandInteraction, MessageEmbed, ShardClientUtil } from 'discord.js'
 import { execSync } from 'child_process'
 import { join } from 'path'
 import { cpus, version } from 'os'
 
-export default class DebugCommand extends Command {
-  public constructor () {
-    super('debug', {
-      aliases: ['debug', 'info'],
-      cooldown: 5000,
-      description: { about: 'Outputs debug information', usage: '' },
-      ratelimit: 1
-    })
-  }
-
-  public async exec (message: Message): Promise<void> {
-    let gitInfo: Buffer
+export = {
+  name: 'debug',
+  channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
+  permissions: [],
+  async exec (i: CommandInteraction): Promise<void> {
+    let gitInfo: Buffer | string
     try {
       gitInfo = execSync('git rev-parse HEAD', { cwd: join(__dirname, '..') })
-    } catch {
-      await message.channel.send('An error occured when fetching information! `Details: git rev-parse HEAD did not execute correctly`')
-      return
+    } catch (e) {
+      console.error(e)
+      gitInfo = 'Failed to retrieve git information'
     }
-
     let memusage = Math.floor(process.memoryUsage().heapUsed / 1024 / 1024)
     let memstring = `${memusage} MB`
     if (memusage > 1024) {
@@ -30,21 +22,25 @@ export default class DebugCommand extends Command {
       memusage %= gigs * 1024
       memstring = `${gigs} GB ${memusage} MB`
     }
-    const embed = new MessageEmbed()
-      .setAuthor(message.client.user?.tag, message.client.user?.displayAvatarURL({ dynamic: true }))
-      .addFields(
-        { name: 'Owner', value: (await message.client.fetchApplication()).owner },
+    const embed = new MessageEmbed({
+      author: {
+        name: i.client.user?.tag,
+        icon_url: i.client.user?.displayAvatarURL({ dynamic: true })
+      },
+      color: 3756250,
+      fields: [
+        { name: 'Owner', value: i.client.application?.owner?.toString() ?? '?' },
         { name: 'Operating System', value: version() },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' },
-        { name: 'Commit', value: gitInfo },
+        { name: 'Commit', value: gitInfo.toString() },
         { name: 'Node Version', value: process.version },
-        { name: 'Logical Cores', value: cpus().length },
-        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed} MHz` },
-        { name: 'Memory Usage', value: memstring }
-      )
-    if (message.guild) embed.addField('Server ID', message.guild.id)
-    if (this.client.shard) embed.addField('Shard', message.guild ? ShardClientUtil.shardIDForGuildID(message.guild.id, this.client.shard.count).toString() : '0')
-    if (message.member?.displayColor) embed.setColor(message.member.displayColor)
-    await message.channel.send(embed)
+        { name: 'Logical Cores', value: `${cpus().length}` },
+        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed} MHz`},
+        { name: 'Memory Usage', value: memstring },
+        { name: 'Server ID', value: i.guildId ?? '?'}
+      ]
+    })
+    if (i.client.shard) embed.addField('Shard', `${i.client.shard.ids[0]} / ${i.client.shard.ids[1]}`)
+    await i.reply({ embeds: [embed] })
   }
 }

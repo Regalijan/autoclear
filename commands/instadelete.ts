@@ -1,69 +1,42 @@
-import { Command } from 'discord-akairo'
-import { Message, TextChannel } from 'discord.js'
+import { CommandInteraction } from 'discord.js'
 import db from '../database'
 
-export default class InstaDeleteCommand extends Command {
-  public constructor () {
-    super('instadelete', {
-      aliases: ['instadelete' ,'jitdelete'],
-      args: [
-        {
-          id: 'switcher',
-          prompt: {
-            start: 'Do you want to `enable` or `disable` instadelete?',
-            timeout: 'Does it really take you this long to find a channel? Try again.'
-          }
-        },
-        {
-          id: 'channel',
-          prompt: {
-            retry: 'Give me something that is a channel.',
-            start: 'Which channel?',
-            timeout: 'Does it really take you this long to find a channel? Try again and hurry up next time.'
-          },
-          type: 'textChannel'
-        }
-      ],
-      cooldown: 5000,
-      description: { about: 'Toggles instadelete for the specified channel', usage: '<enable/disable> <#channel>' },
-      userPermissions: ['MANAGE_GUILD']
-    })
-  }
-
-  public async exec (message: Message, { switcher, channel }: { switcher: string, channel: TextChannel }): Promise<void> {
-    if (!message.guild) {
-      await message.channel.send('Something went wrong... `Details: message.guild is null`').catch(e => console.error(e))
+export = {
+  name: 'instadelete',
+  channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
+  permissions: ['MANAGE_GUILD'],
+  async exec (i: CommandInteraction): Promise<void> {
+    if (!i.guildId) throw Error('<CommandInteraction>.guildId is null')
+    const channel = i.options.getChannel('targetChannel')
+    if (!channel) throw Error('Required argument targetChannel is null')
+    if (!['GUILD_TEXT'].includes(channel.type.toString())) {
+      await i.reply({ content: 'I cannot run commands on this type of channel.', ephemeral: true })
       return
     }
+    const action = i.options.getString('action')
+    if (!action) throw Error('Required argument action is null')
+    switch (action.toLowerCase()) {
+      case 'disable':
+        await db.query('DELETE FROM channels WHERE channel = $1 AND guild = $2 AND is_insta = true;', [channel.id, i.guildId])
+        await i.reply(`Instadelete disabled for <#${channel.id}>.`)
+        break
 
-    switch (switcher) {
       case 'enable':
-        let user = message.client.user?.id
-        try {
-          if (!user) {
-            user = (await message.client.users.fetch((await message.client.fetchApplication()).id)).id
-          }
-        } catch (e) {
-          console.error(e)
-          await message.channel.send(`Something went wrong... \`Details: ${e}\``)
+        if (!i.member) throw Error('')
+        if (!(await i.guild?.channels.fetch(channel.id))?.permissionsFor(i.user.id)?.has(['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'])) {
+          await i.reply('I cannot able instadelete on this channel because I do not have the required permissions (manage messages and read message history).')
           return
         }
-        if (!channel.permissionsFor(user)?.has(['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'])) {
-          await message.channel.send('I cannot enable instadelete on this channel as I do not have the `Read Message History` and `Manage Messages` permissions. Please give me the required permissions before running this command again.')
+        if ((await db.query('SELECT * FROM channels WHERE id = $1;', [channel.id])).rowCount > 0) {
+          await i.reply('Autoclear or instadelete is already enabled on this channel!')
           return
         }
-        try {
-          const rowsOfMatchingChannels = await db.query('SELECT * FROM channels WHERE channel = $1;', [channel])
-          if (rowsOfMatchingChannels.rowCount > 0) {
-            await message.channel.send('Autoclear or instadelete is already enabled on this channel! Please disable them before attempting to enable instadelete.')
-            return
-          }
-          await db.query('INSERT INTO channels (channel, guild, is_insta) VALUES ($1, $2, $3);', [channel, message.guild, false])
-        } catch (e) {
-          console.error(e)
-          await message.channel.send('I could not enable instadelete for that channel. `Details: Locating or creating row failed`')
-        }
-        await message.channel.send(`Instadelete enabled for <#${channel.id}>`).catch(e => console.error(e))
+        await db.query('INSERT INTO channels (channel, guild, is_insta) VALUES ($1, $2, true);', [channel.id, i.guildId])
+        await i.reply(`Instadelete enabled for <#${channel.id}>`)
+        break
+
+      default:
+        await i.reply(`Possible actions are \`disable\` and \`enable\`, not \`${action}\`.`)
     }
   }
 }

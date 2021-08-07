@@ -1,17 +1,10 @@
-import { Command } from 'discord-akairo'
-import { Message } from 'discord.js'
+import { CommandInteraction } from 'discord.js'
 
-export default class HelpCommand extends Command {
-  public constructor () {
-    super('help', {
-      aliases: ['help', 'support'],
-      cooldown: 2000,
-      description: { about: 'Shows help link', usage: '' },
-      ratelimit: 1
-    })
-  }
-
-  public async exec (message: Message): Promise<void> {
-    await message.channel.send('Documentation can be found at https://autoclear.wolftallemo.com')
+export = {
+  name: 'help',
+  channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
+  permissions: [],
+  async exec (i: CommandInteraction): Promise<void> {
+    await i.reply('Documentation can be seen at https://autoclear.wolftallemo.com')
   }
 }
