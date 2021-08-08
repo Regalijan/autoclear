@@ -55,7 +55,7 @@ if (process.env.ENABLEDEBUG) bot.on('debug', function (info: string): void {
   console.log(info)
 })
 
-bot.on('message', async function (message: Message): Promise<void> {
+bot.on('messageCreate', async function (message: Message): Promise<void> {
   if (message.channel.type === 'DM' || !message.deletable) return
   const searchedChannel = await db.query('SELECT is_insta FROM channels WHERE channel = $1;', [message.channel.id]).catch(e => console.error(e))
   if (!searchedChannel?.rowCount || !searchedChannel.rows[0].is_insta) return
