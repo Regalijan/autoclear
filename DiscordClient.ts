@@ -39,7 +39,10 @@ db.connect().catch(e => {
 })
 
 const bot = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+  presence: {
+    activities: [{ type: 5, name: 'message eating contest.' }]
+  }
 })
 
 bot.login().catch(e => {
