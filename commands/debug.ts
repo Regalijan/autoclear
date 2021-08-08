@@ -29,7 +29,8 @@ export = {
       },
       color: 3756250,
       fields: [
-        { name: 'Owner', value: `${i.client.application ? (await i.client.application.fetch()).owner : 'Unknown'}` },
+        // @ts-expect-error
+        { name: 'Owner', value: `${i.client.application ? ((await i.client.application.fetch()).owner.owner ? i.client.application.owner.owner.tag : i.client.application.owner.tag) : 'Unknown'}` },
         { name: 'Operating System', value: version() },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' },
         { name: 'Commit', value: gitInfo.toString() },
