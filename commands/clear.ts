@@ -7,7 +7,7 @@ export = {
   async exec (i: CommandInteraction): Promise<void> {
     let amount = i.options.getInteger('amount') ?? 100
     if (amount > 100 || amount < 0) amount = 100
-    const targetChannel = i.options.getChannel('targetChannel') ?? i.channel
+    const targetChannel = i.options.getChannel('targetchannel') ?? i.channel
     if (!targetChannel) throw Error('<CommandInteraction>.channel is null')
     if (!i.client?.application) throw Error('<CommandInteraction>.client.application is null')
     if (!(await i.guild?.channels.fetch(targetChannel.id))?.permissionsFor(i.client.application?.id)?.has('MANAGE_CHANNELS')) {

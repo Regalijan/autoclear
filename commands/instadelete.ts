@@ -7,8 +7,8 @@ export = {
   permissions: ['MANAGE_GUILD'],
   async exec (i: CommandInteraction): Promise<void> {
     if (!i.guildId) throw Error('<CommandInteraction>.guildId is null')
-    const channel = i.options.getChannel('targetChannel')
-    if (!channel) throw Error('Required argument targetChannel is null')
+    const channel = i.options.getChannel('targetchannel')
+    if (!channel) throw Error('Required argument targetchannel is null')
     if (!['GUILD_TEXT'].includes(channel.type.toString())) {
       await i.reply({ content: 'I cannot run commands on this type of channel.', ephemeral: true })
       return

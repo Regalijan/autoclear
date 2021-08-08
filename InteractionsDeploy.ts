@@ -31,7 +31,7 @@ const commandData = JSON.stringify([
         ]
       },
       {
-        name: 'targetChannel',
+        name: 'targetchannel',
         description: 'The selected channel to act on',
         type: 7,
         required: true
@@ -57,7 +57,7 @@ const commandData = JSON.stringify([
         type: 4
       },
       {
-        name: 'targetChannel',
+        name: 'targetchannel',
         description: 'The channel to purge',
         type: 7
       }
@@ -72,7 +72,7 @@ const commandData = JSON.stringify([
     description: 'Forcefully disables a channel from autoclear (meant for deleted channels)',
     options: [
       {
-        name: 'channelId',
+        name: 'channelid',
         description: 'The id of the channel',
         type: 3,
         required: true
@@ -88,7 +88,7 @@ const commandData = JSON.stringify([
     description: 'Toggles instadelete for a channel',
     options: [
       {
-        name: 'targetChannel',
+        name: 'targetchannel',
         description: 'The channel to toggle',
         type: 7,
         required: true
@@ -120,7 +120,7 @@ const commandData = JSON.stringify([
     description: 'Restarts the bot',
     options: [
       {
-        name: 'allShards',
+        name: 'allshards',
         description: 'Whether to restart all shards',
         type: 5
       },
@@ -146,7 +146,7 @@ const commandData = JSON.stringify([
         required: true
       },
       {
-        name: 'activityType',
+        name: 'activitytype',
         description: 'The activity type int',
         type: 4
       }
@@ -158,14 +158,15 @@ const req = https.request({
   hostname: 'discord.com',
   port: 443,
   path: `/api/v9/applications/${process.argv[2]}/commands`,
-  method: 'POST',
+  method: 'PUT',
   headers: {
-    authorization: `Bot ${process.env.BKTN}`,
-    'content-length': commandData.length
+    authorization: `Bot ${process.env.BTKN}`,
+    'content-length': commandData.length,
+    'content-type': 'application/json'
   }
 }, function (res) {
   res.on('data', function (data): void {
-    console.log(data)
+    console.log(Buffer.from(data).toString('utf-8'))
   })
 })
 

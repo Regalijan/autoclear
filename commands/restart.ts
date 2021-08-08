@@ -5,7 +5,7 @@ export = {
   channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
   permissions: [],
   async exec (i: CommandInteraction): Promise<void> {
-    if (i.options.getBoolean('allShards')) {
+    if (i.options.getBoolean('allshards')) {
       await i.reply('Restarting all shards...')
       await i.client.shard?.broadcastEval(c => {
         c.destroy()

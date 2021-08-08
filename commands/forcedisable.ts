@@ -6,7 +6,7 @@ export = {
   channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
   permissions: ['MANAGE_GUILD'],
   async exec (i: CommandInteraction): Promise<void> {
-    const chnlId = i.options.getString('channelId')
+    const chnlId = i.options.getString('channelid')
     if (!chnlId) {
       await i.reply('You did not supply a channel id.')
       return

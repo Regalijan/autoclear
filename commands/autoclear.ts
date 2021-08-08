@@ -9,8 +9,8 @@ export = {
     if (!i.guildId) throw Error('<CommandInteraction>.guildId is null')
     const action = i.options.getString('action')
     if (!action) throw Error('Non-string passed as a string argument')
-    const targetChannel = i.options.getChannel('targetChannel')
-    if (!targetChannel) throw Error('Required targetChannel is null')
+    const targetChannel = i.options.getChannel('targetchannel')
+    if (!targetChannel) throw Error('Required targetchannel is null')
     switch (action.toLowerCase()) {
       case 'disable':
         await db.query('DELETE FROM channels WHERE channel = $1 AND guild = $2 AND is_insta = false;', [targetChannel.id, i.guildId])
