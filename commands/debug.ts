@@ -29,13 +29,13 @@ export = {
       },
       color: 3756250,
       fields: [
-        { name: 'Owner', value: i.client.application?.owner?.toString() ?? '?' },
+        { name: 'Owner', value: (await i.client.application?.fetch()).owner?.toString() ?? '?' },
         { name: 'Operating System', value: version() },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' },
         { name: 'Commit', value: gitInfo.toString() },
         { name: 'Node Version', value: process.version },
         { name: 'Logical Cores', value: `${cpus().length}` },
-        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed} MHz`},
+        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed} MHz` },
         { name: 'Memory Usage', value: memstring },
         { name: 'Server ID', value: i.guildId ?? '?'}
       ]

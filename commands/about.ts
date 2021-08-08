@@ -13,7 +13,7 @@ export = {
       color: 3756250,
       description: 'About',
       fields: [
-        { name: 'Owner', value: i.client.application?.owner?.toString() ?? 'Unknown'},
+        { name: 'Owner', value: (await i.client.application?.fetch()).owner?.toString() ?? 'Unknown'},
         { name: 'Library', value: 'discord.js@13.0.0' },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' }
       ]
