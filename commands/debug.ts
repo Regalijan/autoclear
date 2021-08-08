@@ -40,7 +40,7 @@ export = {
         { name: 'Server ID', value: i.guildId ?? '?'}
       ]
     })
-    if (i.client.shard) embed.addField('Shard', `${i.client.shard.ids[0]} / ${i.client.shard.ids[1]}`)
+    if (i.client.shard) embed.addField('Shard', `${i.client.shard.ids[0]} / ${i.client.shard.count}`)
     await i.reply({ embeds: [embed] })
   }
 }
