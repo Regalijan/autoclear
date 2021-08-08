@@ -7,10 +7,6 @@ if (typeof process.env.BTKN === 'undefined') {
   throw Error('BOT TOKEN MISSING! WAS IT SET IN THE ENVIRONMENT?')
 }
 
-if (typeof process.env.GLOBALPREFIX === 'undefined') {
-  throw Error('DEFAULT PREFIX MISSING, SET GLOBALPREFIX IN ENVIRONMENT!')
-}
-
 const shardingManager = new ShardingManager(join(__dirname, 'DiscordClient.js'), {
   token: process.env.BTKN,
   totalShards: 'auto'
