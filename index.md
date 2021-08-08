@@ -5,23 +5,22 @@
 So you have your beautiful server and this wonderful bot you just found, what now? Set up channels of course.
 
 ## Commands
-- `ac!about` - About me, beep boop
-- `ac!autoclear <enable|disable> <minutes> <#channel>` - Enables or disables autoclearing on the specified channel every n minutes (minimum 30)
-- `ac!channels` - Displays all channels with autoclearing enabled
-- `ac!clear <amount> <#channel?>` - Clears `amount` messages from `#channel` (or the current channel if none specified, max 100 per command)
-- `ac!debug` - Displays some goodies that may or may not have a use
-- `ac!help` - Finds information for the given command
-- `ac!ping` - Pong
-- `ac!prefix <prefix | null>` - Sets the prefix for the server ("null" clears it)
-- `ac!setglobalstatus`** - Sets the status message globally (across all shards)
-- `ac!setstatus`** - Sets status for the current shard
+- `/about` - About me, beep boop
+- `/autoclear <enable|disable> <#channel> <minutes?>` - Enables or disables autoclearing on the specified channel every n minutes (minimum 30)
+- `/channels` - Displays all channels with autoclearing enabled
+- `/clear <amount> <#channel?>` - Clears `amount` messages from `#channel` (or the current channel if none specified, max 100 per command)
+- `/debug` - Displays some goodies that may or may not have a use
+- `/help` - Finds information for the given command
+- `/ping` - Pong
+- `/resetstatus`** - Resets status of all shards
+- `/setglobalstatus <activity> <activitytype?>`** - Sets the status message globally (across all shards), `activitytype` requires an integer.
 
 ** Owner only
 
 ## FAQ
-- "I still see messages in a channel even though I set it to clear" - Run `ac!clear` on the channel to catch the remainders, any new messages should be picked up. This occurs when the bot has recently restarted.
+- "I still see messages in a channel even though I set it to clear" - Run `/clear` on the channel to catch the remainders, any new messages should be picked up. This occurs when the bot has recently restarted.
 
-- "The bot isn't responding" - Make sure the bot has permission to send messages in the channel you are running commands.
+- ~~"The bot isn't responding" - Make sure the bot has permission to send messages in the channel you are running commands.~~ Autoclear now uses slash commands, you may need to reinvite the bot if you don't see them.
 
 - "Messages aren't being deleted" - Make sure the bot has the manage messages permission so that it can delete messages.
 
@@ -32,7 +31,7 @@ Here be dragons, make sure you know what you are doing!
 
 ### Install required tools
 1. Clone the repo
-2. Install NodeJS 16.x (15.x will work but it will be deprecated in the near future, not tested on 14.x but will probably still work)
+2. Install NodeJS 16.6.0 or later (Support for earlier versions was dropped in Discord.js v13)
 3. Install PostgreSQL 13
 4. `npm install`
 
@@ -42,8 +41,6 @@ Here be dragons, make sure you know what you are doing!
 - `DBU` - Database username
 - `DBN` - Database name, this will need to be the same as the database you create later
 - `BTKN` - Bot token
-- `BOTOWNER` - Your user id
-- `GLOBALPREFIX` - The prefix which is recognized anywhere the bot is
 
 Now create a file named `.env` and add all of the values
 
@@ -53,6 +50,7 @@ Now create a file named `.env` and add all of the values
 3. Keep the bot alive somehow, whether it be a process manager or a systemd service
 4. Create a database and import the template
 5. `npx tsc` in the project root
+6. Deploy your slash commands with `node dist/InteractionsDeploy.js {YOUR_BOT_ID}`
 
 ## I need help
 There is no dedicated server for autoclear, but I am usually [available](https://discord.com/invite/cYakVbr)
