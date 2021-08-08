@@ -29,7 +29,7 @@ export = {
       },
       color: 3756250,
       fields: [
-        { name: 'Owner', value: (await i.client.application?.fetch()).owner?.toString() ?? '?' },
+        { name: 'Owner', value: `${i.client.application ? (await i.client.application.fetch()).owner : 'Unknown'}` },
         { name: 'Operating System', value: version() },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' },
         { name: 'Commit', value: gitInfo.toString() },
