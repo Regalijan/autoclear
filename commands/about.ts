@@ -11,13 +11,13 @@ export = {
         iconURL: i.client.user?.displayAvatarURL({ dynamic: true })
       },
       color: 3756250,
-      description: 'About',
       fields: [
         // @ts-expect-error
         { name: 'Owner', value: `${i.client.application ? ((await i.client.application.fetch()).owner.name ? i.client.application.owner.owner.tag : i.client.application.owner.tag) : 'Unknown'}` },
         { name: 'Library', value: 'discord.js@13.0.0' },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' }
-      ]
+      ],
+      title: 'About'
     })
     await i.reply({ embeds: [embed] })
   }
