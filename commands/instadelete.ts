@@ -27,7 +27,7 @@ export = {
           await i.reply('I cannot able instadelete on this channel because I do not have the required permissions (manage messages and read message history).')
           return
         }
-        if ((await db.query('SELECT * FROM channels WHERE id = $1;', [channel.id])).rowCount > 0) {
+        if ((await db.query('SELECT * FROM channels WHERE channel = $1;', [channel.id])).rowCount > 0) {
           await i.reply('Autoclear or instadelete is already enabled on this channel!')
           return
         }
