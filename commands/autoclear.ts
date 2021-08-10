@@ -31,7 +31,7 @@ export = {
           await i.reply('Interval must be 30 minutes or more')
           break
         }
-        await db.query('INSERT INTO channels (guild, channel, interval, is_insta) VALUES ($1, $2, $3, false);', [i.guildId, targetChannel.id, interval])
+        await db.query('INSERT INTO channels (guild, channel, interval, last_ran, is_insta) VALUES ($1, $2, $3, $4, false);', [i.guildId, targetChannel.id, interval, Date.now()])
         await i.reply(`<#${targetChannel.id}> is now set to autoclear.`)
         break
 
