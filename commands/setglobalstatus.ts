@@ -22,7 +22,7 @@ export = {
     let activity = i.options.getInteger('activitytype') ?? 0
     if (activity > 5 || activity === 4) activity = 0
     let activityString = i.options.getString('activity') ?? 'message eating contest.'
-    await i.client.shard?.broadcastEval(c => c.user?.setPresence({ activities: [{ name: activityString, type: activity }] }))
+    i.client.user?.setPresence({ activities: [{ name: activityString, type: activity }] })
     await i.reply('Set status successfully.')
   }
 }
