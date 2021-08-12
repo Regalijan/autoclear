@@ -99,7 +99,7 @@ setInterval(async function (): Promise<void>  {
     if (staleChannels.rows[i].last_ran + (staleChannels.rows[i].interval * 60000) > Date.now()) continue
     const guild = bot.guilds.cache.find(g => g.id === staleChannels.rows[i].guild)
     if (typeof guild === 'undefined') continue
-    const untypedChannel: any = guild.channels.cache.find(c => c.id === staleChannels.rows[i].channel)
+    const untypedChannel: any = await guild.channels.fetch(staleChannels.rows[i].channel).catch(e => console.error(e))
     if (typeof untypedChannel === 'undefined') continue
     const user = bot.application?.id
     if (!user) return
