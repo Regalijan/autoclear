@@ -15,7 +15,7 @@ export = {
       await i.reply('You cannot run this command.')
       return
     }
-    await i.client.shard?.broadcastEval(c => c.user?.setPresence({ activities: [{ name: 'message eating contest.', type: 5 }] }))
+    i.client.user?.setPresence({ activities: [{ name: 'message eating contest.', type: 5 }] })
     await i.reply('Reset status successfully.')
   }
 }
