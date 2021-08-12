@@ -15,7 +15,7 @@ export = {
       return
     }
     // @ts-expect-error
-    if (!owner.members?.has(i.user.id) || owner.id !== i.user.id) {
+    if (!owner.members?.has(i.user.id) && owner.id !== i.user.id) {
       await i.reply('You cannot run this command.')
       return
     }
