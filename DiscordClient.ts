@@ -96,8 +96,8 @@ setInterval(async function (): Promise<void>  {
   const staleChannels = await db.query('SELECT * FROM channels WHERE is_insta = false AND last_ran < $1;', [Date.now() - 1800000]).catch(e => console.error(e))
   if (typeof staleChannels === 'undefined') return
   for (let i = 0; i < staleChannels.rowCount; i++) {
-    if (staleChannels.rows[i].last_ran + (staleChannels.rows[i].interval * 60000) > Date.now()) continue
-    const guild = bot.guilds.cache.find(g => g.id === staleChannels.rows[i].guild)
+    if (parseInt(staleChannels.rows[i].last_ran) + (parseInt(staleChannels.rows[i].interval) * 60000) > Date.now()) continue
+    const guild = await bot.guilds.fetch(staleChannels.rows[i].guild).catch(e => console.error(e))
     if (typeof guild === 'undefined') continue
     const untypedChannel: any = await guild.channels.fetch(staleChannels.rows[i].channel).catch(e => console.error(e))
     if (typeof untypedChannel === 'undefined') continue
