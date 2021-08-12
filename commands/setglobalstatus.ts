@@ -5,7 +5,11 @@ export = {
   channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
   permissions: [],
   async exec (i: CommandInteraction): Promise<void> {
-    const owner = i.client.application?.owner
+    if (!i.client.application) {
+      await i.reply('An error occured when checking your permissions.')
+      return
+    } 
+    const owner = i.client.application.owner ?? (await i.client.application.fetch()).owner
     if (!owner) {
       await i.reply('An error occured when checking your permissions.')
       return
