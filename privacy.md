@@ -20,7 +20,7 @@ The following extra information is collected for caching purposes by [discord.js
 - Data collected directly related to the service: Until it is manually deleted, whether it be by the developer or a server manager (except in the case of user IDs, which are cleared after a ratelimit expires)
 - Extra data collected by discord.js: There is no single time frame as such data can be cleared out at any point for performance reasons, but it is never written to disk and will not survive a service restart
 
-TL;DR: We don't permanently store anything that could possibly identify a specific user
+In short, we don't permanently store anything that could possibly identify you as a user.
 
 ### How do I delete my information
 We do not store anything identifying specific users on disk, so you can't because there's nowhere to delete it from.
