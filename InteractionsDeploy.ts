@@ -1,9 +1,7 @@
 import { config as dotenv } from 'dotenv'
-import https from 'https'
+import fetch from 'node-fetch'
 
 dotenv()
-
-if (!process.argv[2]) throw Error('Please specify the application id with "node InteractionsDeploy.js {ApplicationID}"')
 
 const commandData = JSON.stringify([
   {
@@ -154,25 +152,24 @@ const commandData = JSON.stringify([
   }
 ])
 
-const req = https.request({
-  hostname: 'discord.com',
-  port: 443,
-  path: `/api/v9/applications/${process.argv[2]}/commands`,
-  method: 'PUT',
-  headers: {
-    authorization: `Bot ${process.env.BTKN}`,
-    'content-length': commandData.length,
-    'content-type': 'application/json'
-  }
-}, function (res) {
-  res.on('data', function (data): void {
-    console.log(Buffer.from(data).toString('utf-8'))
+;(async function () {
+  const meRequest = await fetch('https://discord.com/api/v9/users/@me', {
+    headers: {
+      accept: 'application/json',
+      authorization: `Bot ${process.env.BTKN}`,
+      'user-agent': `DiscordBot (https://github.com/discordjs/discord.js#readme, Node.js/${process.version}) +APPLICATION COMMANDS DEPLOY SCRIPT - https://github.com/Wolftallemo/autoclear/blob/main/InteractionsDeploy.ts`
+    }
   })
-})
 
-req.on('error', function (error): void {
-  console.log(error)
-})
-
-req.write(commandData)
-req.end()
+  const meData: any = await meRequest.json() // node-fetch typings are a bit broken
+  if (!meData.id) return
+  await fetch(`https://discord.com/api/v9/applications/${meData.id}/commands`, {
+    headers: {
+      accept: 'application/json',
+      authorization: `Bot ${process.env.BTKN}`,
+      'content-length': commandData.length.toString(),
+      'content-type': 'application/json'
+    },
+    method: 'PUT'
+  })
+}())
