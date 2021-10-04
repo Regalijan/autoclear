@@ -31,4 +31,4 @@ shardingManager.on('shardCreate', function (shard) {
     await db.end().catch(() => {})
   } catch {}
   await shardingManager.spawn()
-})
+}())
