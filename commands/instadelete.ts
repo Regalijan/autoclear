@@ -18,25 +18,25 @@ export = {
     switch (action.toLowerCase()) {
       case 'disable':
         await db.query('DELETE FROM channels WHERE channel = $1 AND guild = $2 AND is_insta = true;', [channel.id, i.guildId])
-        await i.reply(`Instadelete disabled for <#${channel.id}>.`)
+        await i.reply({ content: `Instadelete disabled for <#${channel.id}>.` })
         break
 
       case 'enable':
         if (!i.member) throw Error('')
         if (!(await i.guild?.channels.fetch(channel.id))?.permissionsFor(i.user.id)?.has(['MANAGE_MESSAGES', 'READ_MESSAGE_HISTORY'])) {
-          await i.reply('I cannot able instadelete on this channel because I do not have the required permissions (manage messages and read message history).')
+          await i.reply({ content: 'I cannot able instadelete on this channel because I do not have the required permissions (manage messages and read message history).' })
           return
         }
         if ((await db.query('SELECT * FROM channels WHERE channel = $1;', [channel.id])).rowCount > 0) {
-          await i.reply('Autoclear or instadelete is already enabled on this channel!')
+          await i.reply({ content: 'Autoclear or instadelete is already enabled on this channel!' })
           return
         }
         await db.query('INSERT INTO channels (channel, guild, is_insta) VALUES ($1, $2, true);', [channel.id, i.guildId])
-        await i.reply(`Instadelete enabled for <#${channel.id}>`)
+        await i.reply({ content: `Instadelete enabled for <#${channel.id}>` })
         break
 
       default:
-        await i.reply(`Possible actions are \`disable\` and \`enable\`, not \`${action}\`.`)
+        await i.reply({ content: `Possible actions are \`disable\` and \`enable\`, not \`${action}\`.` })
     }
   }
 }

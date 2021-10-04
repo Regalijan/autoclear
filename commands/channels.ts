@@ -9,7 +9,7 @@ export = {
     if (!i.guild) throw Error('<CommandInteraction>.guild is null')
     const channels = await db.query('SELECT * FROM channels WHERE guild = $1;', [i.guild.id])
     if (channels.rowCount === 0) {
-      await i.reply('No channels were found.')
+      await i.reply({ content: 'No channels were found.' })
       return
     }
     const embed = new MessageEmbed({

@@ -7,15 +7,15 @@ export = {
   async exec (i: CommandInteraction): Promise<void> {
     const owner = i.client.application?.owner
     if (!owner) {
-      await i.reply('An error occured when checking your permissions.')
+      await i.reply({ content: 'An error occured when checking your permissions.' })
       return
     }
     // @ts-expect-error
     if (!owner.members?.has(i.user.id) || owner.id !== i.user.id) {
-      await i.reply('You cannot run this command.')
+      await i.reply({ content: 'You cannot run this command.' })
       return
     }
     i.client.user?.setPresence({ activities: [{ name: 'message eating contest.', type: 5 }] })
-    await i.reply('Reset status successfully.')
+    await i.reply({ content: 'Reset status successfully.' })
   }
 }

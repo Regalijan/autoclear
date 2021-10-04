@@ -13,6 +13,6 @@ export = {
     }
     if (!i.guildId) throw Error('<CommandInteraction>.guildId is null')
     await db.query('DELETE FROM channels WHERE channel = $1 AND guild = $2;', [chnlId, i.guildId])
-    i.reply(`Channel ${chnlId} deleted.`)
+    i.reply({ content: `Channel ${chnlId} deleted.` })
   }
 }

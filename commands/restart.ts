@@ -6,7 +6,7 @@ export = {
   permissions: [],
   async exec (i: CommandInteraction): Promise<void> {
     if (i.options.getBoolean('allshards')) {
-      await i.reply('Restarting all shards...')
+      await i.reply({ content: 'Restarting all shards...' })
       await i.client.shard?.broadcastEval(c => {
         c.destroy()
         process.exit()
@@ -14,7 +14,7 @@ export = {
     } else {
       if (i.options.getString('server')) {
         // @ts-expect-error
-        await i.reply(`Restarting shard ${ShardClientUtil.shardIdForGuildId(i.options.getString('server'), i.client.shard?.count)}...`)
+        await i.reply({ content: `Restarting shard ${ShardClientUtil.shardIdForGuildId(i.options.getString('server'), i.client.shard?.count)}...` })
         await i.client.shard?.broadcastEval(c => {
           c.destroy()
           process.exit()
@@ -23,7 +23,7 @@ export = {
           shard: ShardClientUtil.shardIdForGuildId(i.options.getString('server'), i.client.shard.count)
         })
       } else {
-        await i.reply('Restarting current shard...')
+        await i.reply({ content: 'Restarting current shard...' })
         i.client.destroy()
         process.exit()
       }

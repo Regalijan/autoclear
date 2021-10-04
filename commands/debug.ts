@@ -10,6 +10,7 @@ export = {
     let gitInfo: Buffer | string
     try {
       gitInfo = execSync('git rev-parse HEAD', { cwd: join(__dirname, '..') })
+      if (gitInfo instanceof Buffer) gitInfo = gitInfo.toString('utf8')
     } catch (e) {
       console.error(e)
       gitInfo = 'Failed to retrieve git information'

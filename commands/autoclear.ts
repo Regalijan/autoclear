@@ -7,36 +7,34 @@ export = {
   permissions: ['MANAGE_GUILD'],
   async exec (i: CommandInteraction): Promise<void> {
     if (!i.guildId) throw Error('<CommandInteraction>.guildId is null')
-    const action = i.options.getString('action')
-    if (!action) throw Error('Non-string passed as a string argument')
-    const targetChannel = i.options.getChannel('targetchannel')
-    if (!targetChannel) throw Error('Required targetchannel is null')
+    const action = i.options.getString('action', true)
+    const targetChannel = i.options.getChannel('targetchannel', true)
     switch (action.toLowerCase()) {
       case 'disable':
         await db.query('DELETE FROM channels WHERE channel = $1 AND guild = $2 AND is_insta = false;', [targetChannel.id, i.guildId])
-        await i.reply(`<#${targetChannel.id}> will no longer autoclear.`)
+        await i.reply({ content: `<#${targetChannel.id}> will no longer autoclear.` })
         break
 
       case 'enable':
         if (targetChannel.type !== 'GUILD_TEXT') {
-          await i.reply('Only text channels are supported for autoclear.')
+          await i.reply({ content: 'Only text channels are supported for autoclear.' })
           return
         }
         if ((await db.query('SELECT * FROM channels WHERE channel = $1 AND guild = $2;', [targetChannel.id, i.guildId])).rowCount > 0) {
-          await i.reply('This channel either already has autoclear set up or is configured to instaclear.')
+          await i.reply({ content: 'This channel either already has autoclear set up or is configured to instaclear.' })
           break
         }
         const interval = i.options.getInteger('interval')
         if (typeof interval !== 'number' || interval < 30) {
-          await i.reply('Interval must be 30 minutes or more')
+          await i.reply({ content: 'Interval must be 30 minutes or more' })
           break
         }
         await db.query('INSERT INTO channels (guild, channel, interval, last_ran, is_insta) VALUES ($1, $2, $3, $4, false);', [i.guildId, targetChannel.id, interval, Date.now()])
-        await i.reply(`<#${targetChannel.id}> is now set to autoclear.`)
+        await i.reply({ content: `<#${targetChannel.id}> is now set to autoclear.` })
         break
 
       default:
-        await i.reply(`Possible actions are \`disable\` and \`enable\`, not \`${action}\`.`)
+        await i.reply({ content: `Possible actions are \`disable\` and \`enable\`, not \`${action}\`.` })
     }
   }
 }
