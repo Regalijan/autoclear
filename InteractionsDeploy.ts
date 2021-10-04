@@ -1,5 +1,5 @@
 import { config as dotenv } from 'dotenv'
-import fetch from 'node-fetch'
+import axios from 'axios'
 
 dotenv()
 
@@ -153,7 +153,7 @@ const commandData = JSON.stringify([
 ])
 
 ;(async function () {
-  const meRequest = await fetch('https://discord.com/api/v9/users/@me', {
+  const meRequest = await axios('https://discord.com/api/v9/users/@me', {
     headers: {
       accept: 'application/json',
       authorization: `Bot ${process.env.BTKN}`,
@@ -161,9 +161,10 @@ const commandData = JSON.stringify([
     }
   })
 
-  const meData: any = await meRequest.json() // node-fetch typings are a bit broken
-  if (!meData.id) return
-  await fetch(`https://discord.com/api/v9/applications/${meData.id}/commands`, {
+  // @ts-expect-error
+  if (!meRequest.data.id) return
+  // @ts-expect-error The <never> type breaks property reading
+  await axios(`https://discord.com/api/v9/applications/${meRequest.data.id}/commands`, {
     headers: {
       accept: 'application/json',
       authorization: `Bot ${process.env.BTKN}`,
