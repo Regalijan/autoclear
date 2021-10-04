@@ -31,17 +31,14 @@ export = {
       fields: [
         // @ts-expect-error
         { name: 'Owner', value: `${i.client.application ? ((await i.client.application.fetch()).owner.owner ? i.client.application.owner.owner.tag : i.client.application.owner.tag) : 'Unknown'}` },
-        { name: 'Operating System', value: version() },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' },
         { name: 'Commit', value: gitInfo.toString() },
         { name: 'Node Version', value: process.version },
-        { name: 'Logical Cores', value: `${cpus().length}` },
-        { name: 'Processor', value: `${cpus()[0].model} - ${cpus()[0].speed} MHz` },
         { name: 'Memory Usage', value: memstring },
         { name: 'Server ID', value: i.guildId ?? '?'}
       ]
     })
-    if (i.client.shard) embed.addField('Shard', `${i.client.shard.ids[0]} / ${i.client.shard.count}`)
+    if (i.client.shard) embed.addField('Shard', `${i.client.shard.ids[0]} / ${i.client.shard.count} Total`)
     await i.reply({ embeds: [embed] })
   }
 }
