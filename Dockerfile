@@ -1,6 +1,7 @@
 FROM node
 COPY . /opt/autoclear
 WORKDIR /opt/autoclear
+RUN rm -rf postgres
 RUN npm install
 RUN npx tsc
 ENV NODE_ENV=production
