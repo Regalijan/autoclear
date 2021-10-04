@@ -19,7 +19,7 @@ shardingManager.on('shardCreate', function (shard) {
 
 ;(async () => {
   try {
-    const db = new DBClient({
+    let db = new DBClient({
       host: process.env.DBH ?? 'postgres',
       password: process.env.DBPASS,
       user: process.env.DBU ?? 'postgres',
@@ -27,8 +27,16 @@ shardingManager.on('shardCreate', function (shard) {
     }) // Temporary client for main process to create the database if it does not exist
     await db.connect()
     await db.query(`CREATE DATABASE ${process.env.DBN ?? 'autoclear'};`).catch(() => {}) // Is this bad? Yes, but apparently parameterization doesn't work for database creation calls (low risk since there shouldn't be any user input).
-    await db.query('CREATE TABLE IF NOT EXISTS channels (channel text NOT NULL, guild NOT NULL, interval bigint, last_ran bigint, is_insta boolean NOT NULL);')
     await db.end().catch(() => {})
+    db = new DBClient({
+      host: process.env.DBH ?? 'postgres',
+      password: process.env.DBPASS,
+      user: process.env.DBU ?? 'postgres',
+      database: process.env.DBN ?? 'autoclear',
+      port: 5432
+    }) // Initialize a new client to switch to the new database
+    await db.connect()
+    await db.query('CREATE TABLE IF NOT EXISTS channels (channel text NOT NULL, guild NOT NULL, interval bigint, last_ran bigint, is_insta boolean NOT NULL);')
   } catch {}
   await shardingManager.spawn()
 })()
