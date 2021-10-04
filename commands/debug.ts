@@ -1,7 +1,6 @@
-import { CommandInteraction, MessageEmbed, ShardClientUtil } from 'discord.js'
+import { CommandInteraction, MessageEmbed } from 'discord.js'
 import { execSync } from 'child_process'
 import { join } from 'path'
-import { cpus, version } from 'os'
 
 export = {
   name: 'debug',
