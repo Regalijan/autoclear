@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: "postgres"
+    expose:
+      - 5432
+    volumes:
+      - "./postgres:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  autoclear:
+    build: .
+    depends_on:
+      - postgres
+    links:
+      - postgres

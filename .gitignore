@@ -103,5 +103,5 @@ dist
 # TernJS port file
 .tern-port
 
-# Default lokijs database file
-loki.db
+# Postgres data
+postgres/
