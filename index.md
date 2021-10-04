@@ -32,7 +32,7 @@ Here be dragons, make sure you know what you are doing!
 ### Install required tools
 1. Clone the repo
 2. Install NodeJS 16.6.0 or later (Support for earlier versions was dropped in Discord.js v13)
-3. Install PostgreSQL 13
+3. Install PostgreSQL 14
 4. `npm install`
 
 ### ENV variables
