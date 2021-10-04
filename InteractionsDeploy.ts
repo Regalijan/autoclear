@@ -159,13 +159,14 @@ axios('https://discord.com/api/v9/users/@me', {
   }
 }).then(async meData => {
   // @ts-expect-error
-  await axios(`https://discord.com/api/v9/applications/${meData.data.id}/commands`, {
+  axios(`https://discord.com/api/v9/applications/${meData.data.id}/commands`, {
     headers: {
       accept: 'application/json',
       authorization: `Bot ${process.env.BTKN}`,
       'content-length': commandData.length.toString(),
       'content-type': 'application/json'
     },
-    method: 'PUT'
+    method: 'PUT',
+    data: commandData
   })
 })
