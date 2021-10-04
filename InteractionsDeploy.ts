@@ -152,19 +152,14 @@ const commandData = JSON.stringify([
   }
 ])
 
-;(async function () {
-  const meRequest = await axios('https://discord.com/api/v9/users/@me', {
-    headers: {
-      accept: 'application/json',
-      authorization: `Bot ${process.env.BTKN}`,
-      'user-agent': `DiscordBot (https://github.com/discordjs/discord.js#readme, Node.js/${process.version}) +APPLICATION COMMANDS DEPLOY SCRIPT - https://github.com/Wolftallemo/autoclear/blob/main/InteractionsDeploy.ts`
-    }
-  })
-
+axios('https://discord.com/api/v9/users/@me', {
+  headers: {
+    accept: 'application/json',
+    authorization: `Bot ${process.env.BTKN}`
+  }
+}).then(async meData => {
   // @ts-expect-error
-  if (!meRequest.data.id) return
-  // @ts-expect-error The <never> type breaks property reading
-  await axios(`https://discord.com/api/v9/applications/${meRequest.data.id}/commands`, {
+  await axios(`https://discord.com/api/v9/applications/${meData.data.id}/commands`, {
     headers: {
       accept: 'application/json',
       authorization: `Bot ${process.env.BTKN}`,
@@ -173,4 +168,4 @@ const commandData = JSON.stringify([
     },
     method: 'PUT'
   })
-}())
+})
