@@ -27,30 +27,42 @@ So you have your beautiful server and this wonderful bot you just found, what no
 - "Is there a premium version" - Not at the moment.
 
 ## Self hosting guide
-Here be dragons, make sure you know what you are doing!
+~~Here be dragons, make sure you know what you are doing!~~ Autoclear is now dockerized, which should make self-hosting much easier.
 
 ### Install required tools
 1. Clone the repo
-2. Install NodeJS 16.6.0 or later (Support for earlier versions was dropped in Discord.js v13)
-3. Install PostgreSQL 14
-4. `npm install`
+2. Install [Docker](https://docs.docker.com/get-docker/)
+
+#### Special Instructions for Linux
+1. Head to the [releases section](https://github.com/docker/compose/releases/latest) of the Docker Compose repository.
+2. Download the correct binary for your system - this will probably be x86_64 but you can always check with `uname -m`.
+3. Move the binary to one of the directories listed [here](https://github.com/docker/compose#where-to-get-docker-compose) - MAKE SURE THE DIRECTORY EXISTS BEFORE MOVING THE FILE!
+4. Allow execution of the binary `sudo chmod +x name_of_binary`.
+5. Reload shell if `docker compose` does not work.
 
 ### ENV variables
+Only the bot token is required when running in Docker.
+
 - `DBH` - Database host, if on the same machine `localhost` will suffice
 - `DBPASS` - Database password, UNIX sockets have not been tested with this bot
 - `DBU` - Database username
 - `DBN` - Database name, this will need to be the same as the database you create later
-- `BTKN` - Bot token
+- `BTKN` - Bot token (required)
 
 Now create a file named `.env` and add all of the values
 
 ### Get ready
-1. Create a new database user with the appropriate permissions
-2. Create a dedicated user account for the bot to run under
-3. Keep the bot alive somehow, whether it be a process manager or a systemd service
-4. Create a database and import the template
-5. `npx tsc` in the project root
-6. Deploy your slash commands with `node dist/InteractionsDeploy.js {YOUR_BOT_ID}`
+1. In the project root, start the bot with `docker compose up -d` (take note of the missing hypen).
+2. That's it.
+
+## Development Setup
+1. Install [Node.js](https://nodejs.org) (16.6.0+ required)
+2. Install [PostgreSQL 14](https://www.postgresql.org)
+3. Create database and load the template in.
+4. Install the required dependencies with `npm install`
+5. Create `.env` and fill in the file using the variable table above.
+6. Compile the project with `npx tsc`
+7. Start the bot with `node dist`
 
 ## I need help
 There is no dedicated server for autoclear, but I am usually [available](https://discord.com/invite/cYakVbr)
