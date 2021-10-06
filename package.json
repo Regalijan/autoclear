@@ -25,7 +25,7 @@
   "dependencies": {
     "axios": "^0.22.0",
     "bufferutil": "^4.0.4",
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.2.0",
     "dotenv": "^10.0.0",
     "erlpack": "github:Wolftallemo/erlpack",
     "pg": "^8.7.1",
