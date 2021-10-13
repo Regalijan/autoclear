@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/node": "^16.10.3",
     "@types/pg": "^8.6.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.4"
   },
   "dependencies": {
     "axios": "^0.22.0",
