@@ -27,7 +27,7 @@
     "bufferutil": "^4.0.5",
     "discord.js": "^13.2.0",
     "dotenv": "^10.0.0",
-    "erlpack": "github:Wolftallemo/erlpack",
+    "erlpack": "github:discord/erlpack",
     "pg": "^8.7.1",
     "utf-8-validate": "^5.0.7",
     "zlib-sync": "^0.1.7"
