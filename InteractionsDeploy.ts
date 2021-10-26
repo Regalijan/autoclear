@@ -158,7 +158,6 @@ axios('https://discord.com/api/v9/users/@me', {
     authorization: `Bot ${process.env.BTKN}`
   }
 }).then(meData => {
-  // @ts-expect-error
   axios(`https://discord.com/api/v9/applications/${meData.data.id}/commands`, {
     headers: {
       accept: 'application/json',
