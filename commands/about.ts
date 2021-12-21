@@ -14,7 +14,7 @@ export = {
       fields: [
         // @ts-expect-error
         { name: 'Owner', value: `${i.client.application ? ((await i.client.application.fetch()).owner.name ? i.client.application.owner.owner.tag : i.client.application.owner.tag) : 'Unknown'}` },
-        { name: 'Library', value: 'discord.js@13.0.0' },
+        { name: 'Library', value: 'discord.js@13.3.1' },
         { name: 'Repository', value: 'https://github.com/Wolftallemo/autoclear' }
       ],
       title: 'About'
