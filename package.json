@@ -29,7 +29,7 @@
     "dotenv": "^10.0.0",
     "erlpack": "github:discord/erlpack",
     "pg": "^8.7.1",
-    "utf-8-validate": "^5.0.7",
+    "utf-8-validate": "^5.0.8",
     "zlib-sync": "^0.1.7"
   }
 }
