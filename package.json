@@ -29,7 +29,7 @@
     "dotenv": "^16.0.0",
     "erlpack": "^0.1.4",
     "pg": "^8.7.3",
-    "utf-8-validate": "^5.0.8",
+    "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"
   }
 }
