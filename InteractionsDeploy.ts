@@ -1,171 +1,172 @@
-import { config as dotenv } from 'dotenv'
-import axios from 'axios'
+import { config as dotenv } from "dotenv";
+import axios from "axios";
 
-dotenv()
+dotenv();
 
 const commandData = JSON.stringify([
   {
-    name: 'about',
-    description: 'Displays information about the bot'
+    name: "about",
+    description: "Displays information about the bot",
   },
   {
-    name: 'autoclear',
-    description: 'Disables or enables autoclear for a channel',
+    name: "autoclear",
+    description: "Disables or enables autoclear for a channel",
     options: [
       {
-        name: 'action',
-        description: 'Disable or Enable',
+        name: "action",
+        description: "Disable or Enable",
         type: 3,
         required: true,
         choices: [
           {
-            name: 'Disable',
-            value: 'disable'
+            name: "Disable",
+            value: "disable",
           },
           {
-            name: 'Enable',
-            value: 'enable'
-          }
-        ]
+            name: "Enable",
+            value: "enable",
+          },
+        ],
       },
       {
-        name: 'targetchannel',
-        description: 'The selected channel to act on',
+        name: "targetchannel",
+        description: "The selected channel to act on",
         type: 7,
-        required: true
+        required: true,
       },
       {
-        name: 'interval',
-        description: 'How often a channel should be cleared (enable only)',
-        type: 4
-      }
-    ]
+        name: "interval",
+        description: "How often a channel should be cleared (enable only)",
+        type: 4,
+      },
+    ],
   },
   {
-    name: 'channels',
-    description: 'Displays all channels which are enabled.'
+    name: "channels",
+    description: "Displays all channels which are enabled.",
   },
   {
-    name: 'clear',
-    description: 'Purges channel of n messages',
+    name: "clear",
+    description: "Purges channel of n messages",
     options: [
       {
-        name: 'amount',
-        description: 'The number of messages to delete',
-        type: 4
+        name: "amount",
+        description: "The number of messages to delete",
+        type: 4,
       },
       {
-        name: 'targetchannel',
-        description: 'The channel to purge',
-        type: 7
-      }
-    ]
+        name: "targetchannel",
+        description: "The channel to purge",
+        type: 7,
+      },
+    ],
   },
   {
-    name: 'debug',
-    description: 'Displays debug information'
+    name: "debug",
+    description: "Displays debug information",
   },
   {
-    name: 'forcedisable',
-    description: 'Forcefully disables a channel from autoclear (meant for deleted channels)',
+    name: "forcedisable",
+    description:
+      "Forcefully disables a channel from autoclear (meant for deleted channels)",
     options: [
       {
-        name: 'channelid',
-        description: 'The id of the channel',
+        name: "channelid",
+        description: "The id of the channel",
         type: 3,
-        required: true
-      }
-    ]
+        required: true,
+      },
+    ],
   },
   {
-    name: 'help',
-    description: 'Displays help link'
+    name: "help",
+    description: "Displays help link",
   },
   {
-    name: 'instadelete',
-    description: 'Toggles instadelete for a channel',
+    name: "instadelete",
+    description: "Toggles instadelete for a channel",
     options: [
       {
-        name: 'targetchannel',
-        description: 'The channel to toggle',
+        name: "targetchannel",
+        description: "The channel to toggle",
         type: 7,
-        required: true
+        required: true,
       },
       {
-        name: 'action',
-        description: 'The action to take',
+        name: "action",
+        description: "The action to take",
         type: 3,
         required: true,
         choices: [
           {
-            name: 'Disable',
-            value: 'disable'
+            name: "Disable",
+            value: "disable",
           },
           {
-            name: 'Enable',
-            value: 'enable'
-          }
-        ]
-      }
-    ]
+            name: "Enable",
+            value: "enable",
+          },
+        ],
+      },
+    ],
   },
   {
-    name: 'ping',
-    description: 'Pong'
+    name: "ping",
+    description: "Pong",
   },
   {
-    name: 'restart',
-    description: 'Restarts the bot',
+    name: "restart",
+    description: "Restarts the bot",
     options: [
       {
-        name: 'allshards',
-        description: 'Whether to restart all shards',
-        type: 5
+        name: "allshards",
+        description: "Whether to restart all shards",
+        type: 5,
       },
       {
-        name: 'server',
-        description: 'The server ID used to calculate the shard',
-        type: 3
-      }
-    ]
-  },
-  {
-    name: 'resetstatus',
-    description: 'Resets status of all shards'
-  },
-  {
-    name: 'setglobalstatus',
-    description: 'Sets the status of all shards',
-    options: [
-      {
-        name: 'activity',
-        description: 'The activity status',
+        name: "server",
+        description: "The server ID used to calculate the shard",
         type: 3,
-        required: true
+      },
+    ],
+  },
+  {
+    name: "resetstatus",
+    description: "Resets status of all shards",
+  },
+  {
+    name: "setglobalstatus",
+    description: "Sets the status of all shards",
+    options: [
+      {
+        name: "activity",
+        description: "The activity status",
+        type: 3,
+        required: true,
       },
       {
-        name: 'activitytype',
-        description: 'The activity type int',
-        type: 4
-      }
-    ]
-  }
-])
+        name: "activitytype",
+        description: "The activity type int",
+        type: 4,
+      },
+    ],
+  },
+]);
 
-axios('https://discord.com/api/v9/users/@me', {
+axios("https://discord.com/api/v9/users/@me", {
   headers: {
-    accept: 'application/json',
-    authorization: `Bot ${process.env.BTKN}`
-  }
-}).then(meData => {
+    accept: "application/json",
+    authorization: `Bot ${process.env.BTKN}`,
+  },
+}).then((meData) => {
   axios(`https://discord.com/api/v9/applications/${meData.data.id}/commands`, {
     headers: {
-      accept: 'application/json',
+      accept: "application/json",
       authorization: `Bot ${process.env.BTKN}`,
-      'content-length': commandData.length.toString(),
-      'content-type': 'application/json'
+      "content-length": commandData.length.toString(),
+      "content-type": "application/json",
     },
-    method: 'PUT',
-    data: commandData
-  })
-})
+    method: "PUT",
+    data: commandData,
+  });
+});

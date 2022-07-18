@@ -1,32 +1,51 @@
-import { CommandInteraction, ShardClientUtil } from 'discord.js'
+import {
+  ChannelType,
+  ChatInputCommandInteraction,
+  ShardClientUtil,
+} from "discord.js";
 
 export = {
-  name: 'restart',
-  channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
+  name: "restart",
+  channels: [
+    ChannelType.GuildText,
+    ChannelType.GuildPublicThread,
+    ChannelType.GuildPrivateThread,
+  ],
   permissions: [],
-  async exec (i: CommandInteraction): Promise<void> {
-    if (i.options.getBoolean('allshards')) {
-      await i.reply({ content: 'Restarting all shards...' })
-      await i.client.shard?.broadcastEval(c => {
-        c.destroy()
-        process.exit()
-      })
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    if (i.options.getBoolean("allshards")) {
+      await i.reply({ content: "Restarting all shards..." });
+      await i.client.shard?.broadcastEval((c) => {
+        c.destroy();
+        process.exit();
+      });
     } else {
-      if (i.options.getString('server')) {
+      if (i.options.getString("server")) {
         // @ts-expect-error
-        await i.reply({ content: `Restarting shard ${ShardClientUtil.shardIdForGuildId(i.options.getString('server'), i.client.shard?.count)}...` })
-        await i.client.shard?.broadcastEval(c => {
-          c.destroy()
-          process.exit()
-        }, {
-          // @ts-expect-error ?????? Didn't realize checking it beforehand still meant it could be null
-          shard: ShardClientUtil.shardIdForGuildId(i.options.getString('server'), i.client.shard.count)
-        })
+        await i.reply({
+          content: `Restarting shard ${ShardClientUtil.shardIdForGuildId(
+            i.options.getString("server"),
+            i.client.shard?.count
+          )}...`,
+        });
+        await i.client.shard?.broadcastEval(
+          (c) => {
+            c.destroy();
+            process.exit();
+          },
+          {
+            // @ts-expect-error ?????? Didn't realize checking it beforehand still meant it could be null
+            shard: ShardClientUtil.shardIdForGuildId(
+              i.options.getString("server"),
+              i.client.shard.count
+            ),
+          }
+        );
       } else {
-        await i.reply({ content: 'Restarting current shard...' })
-        i.client.destroy()
-        process.exit()
+        await i.reply({ content: "Restarting current shard..." });
+        i.client.destroy();
+        process.exit();
       }
     }
-  }
-}
+  },
+};

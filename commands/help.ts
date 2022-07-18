@@ -1,10 +1,16 @@
-import { CommandInteraction } from 'discord.js'
+import { ChannelType, ChatInputCommandInteraction } from "discord.js";
 
 export = {
-  name: 'help',
-  channels: ['GUILD_TEXT', 'GUILD_PUBLIC_THREAD', 'GUILD_PRIVATE_THREAD'],
+  name: "help",
+  channels: [
+    ChannelType.GuildText,
+    ChannelType.GuildPublicThread,
+    ChannelType.GuildPrivateThread,
+  ],
   permissions: [],
-  async exec (i: CommandInteraction): Promise<void> {
-    await i.reply({ content: 'Documentation can be seen at https://autoclear.wolftallemo.com' })
-  }
-}
+  async exec(i: ChatInputCommandInteraction): Promise<void> {
+    await i.reply({
+      content: "Documentation can be seen at https://autoclear.wolftallemo.com",
+    });
+  },
+};
