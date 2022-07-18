@@ -20,13 +20,15 @@ export = {
       },
       color: 3756250,
       fields: [
-        // @ts-expect-error
         {
           name: "Owner",
           value: `${
             i.client.application
+              // @ts-expect-error
               ? (await i.client.application.fetch()).owner.name
+                // @ts-expect-error
                 ? i.client.application.owner.owner.tag
+                // @ts-expect-error
                 : i.client.application.owner.tag
               : "Unknown"
           }`,

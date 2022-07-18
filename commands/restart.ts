@@ -21,9 +21,9 @@ export = {
       });
     } else {
       if (i.options.getString("server")) {
-        // @ts-expect-error
         await i.reply({
           content: `Restarting shard ${ShardClientUtil.shardIdForGuildId(
+            // @ts-expect-error
             i.options.getString("server"),
             i.client.shard?.count
           )}...`,
@@ -34,8 +34,8 @@ export = {
             process.exit();
           },
           {
-            // @ts-expect-error ?????? Didn't realize checking it beforehand still meant it could be null
             shard: ShardClientUtil.shardIdForGuildId(
+              // @ts-expect-error ?????? Didn't realize checking it beforehand still meant it could be null
               i.options.getString("server"),
               i.client.shard.count
             ),
