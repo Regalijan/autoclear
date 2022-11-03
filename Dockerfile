@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:18-bullseye
 COPY . /opt/autoclear
 WORKDIR /opt/autoclear
 RUN rm -rf postgres
