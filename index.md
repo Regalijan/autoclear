@@ -24,7 +24,7 @@ So you have your beautiful server and this wonderful bot you just found, what no
 
 - "Messages aren't being deleted" - Make sure the bot has the manage messages permission so that it can delete messages.
 
-- "Is there a premium version" - Not at the moment, although you can support me on [Patreon](https://www.patreon.com/wolftallemo).
+- "Is there a premium version" - Not at the moment, although you can support me on [Ko-Fi](https://ko-fi.com/wolftallemo).
 
 ## Self hosting guide
 ~~Here be dragons, make sure you know what you are doing!~~ Autoclear is now dockerized, which should make self-hosting much easier.
