@@ -11,6 +11,7 @@ import {
   DMChannel,
   GatewayIntentBits,
   GuildChannel,
+  HTTPError,
   Message,
   PermissionFlagsBits,
   PermissionResolvable,
@@ -154,7 +155,12 @@ setInterval(async function (): Promise<void> {
     if (typeof guild === "undefined") continue;
     const untypedChannel: any = await guild.channels
       .fetch(staleChannels.rows[i].channel)
-      .catch((e) => console.error(e));
+      .catch((e: HTTPError) => e);
+
+    if (untypedChannel instanceof HTTPError && untypedChannel.status === 404) {
+      await db.query("DELETE FROM channels WHERE guild = $1;", [guild]);
+      continue;
+    }
     if (typeof untypedChannel === "undefined") continue;
     const user = bot.application?.id;
     if (!user) return;
