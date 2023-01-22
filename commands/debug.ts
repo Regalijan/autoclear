@@ -41,12 +41,12 @@ export = {
           name: "Owner",
           value: `${
             i.client.application
-              // @ts-expect-error
-              ? (await i.client.application.fetch()).owner.owner
-                // @ts-expect-error
-                ? i.client.application.owner.owner.tag
-                // @ts-expect-error
-                : i.client.application.owner.tag
+              ? // @ts-expect-error
+                (await i.client.application.fetch()).owner.owner
+                ? // @ts-expect-error
+                  i.client.application.owner.owner.tag
+                : // @ts-expect-error
+                  i.client.application.owner.tag
               : "Unknown"
           }`,
         },
