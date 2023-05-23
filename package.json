@@ -19,7 +19,7 @@
   "homepage": "https://github.com/Wolftallemo/autoclear#readme",
   "devDependencies": {
     "@types/node": "^20.2.3",
-    "@types/pg": "^8.6.6",
+    "@types/pg": "^8.10.1",
     "prettier": "^2.8.8",
     "typescript": "^5.0.4"
   },
