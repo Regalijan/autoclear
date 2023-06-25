@@ -15,7 +15,7 @@ export = {
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const embed = new EmbedBuilder({
       author: {
-        name: i.client.user?.tag ?? "Unknown",
+        name: i.client.user?.username ?? "Unknown",
         iconURL: i.client.user?.displayAvatarURL(),
       },
       color: 3756250,
