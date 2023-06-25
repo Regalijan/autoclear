@@ -26,7 +26,7 @@ export = {
     }
     const embed = new EmbedBuilder({
       author: {
-        name: i.user.tag,
+        name: i.user.username,
         icon_url: i.user.displayAvatarURL(),
       },
       color: 3756250,

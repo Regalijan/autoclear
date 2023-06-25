@@ -27,9 +27,9 @@ export = {
               ? // @ts-expect-error
                 (await i.client.application.fetch()).owner.name
                 ? // @ts-expect-error
-                  i.client.application.owner.owner.tag
+                  i.client.application.owner.owner.username
                 : // @ts-expect-error
-                  i.client.application.owner.tag
+                  i.client.application.owner.username
               : "Unknown"
           }`,
         },

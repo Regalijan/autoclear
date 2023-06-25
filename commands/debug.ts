@@ -32,7 +32,7 @@ export = {
     }
     const embed = new EmbedBuilder({
       author: {
-        name: i.client.user?.tag ?? "Unknown",
+        name: i.client.user?.username ?? "Unknown",
         icon_url: i.client.user?.displayAvatarURL(),
       },
       color: 3756250,
@@ -44,9 +44,9 @@ export = {
               ? // @ts-expect-error
                 (await i.client.application.fetch()).owner.owner
                 ? // @ts-expect-error
-                  i.client.application.owner.owner.tag
+                  i.client.application.owner.owner.username
                 : // @ts-expect-error
-                  i.client.application.owner.tag
+                  i.client.application.owner.username
               : "Unknown"
           }`,
         },
