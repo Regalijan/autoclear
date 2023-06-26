@@ -36,7 +36,7 @@ export = {
         { name: "Library", value: "discord.js" },
         {
           name: "Repository",
-          value: "https://github.com/Wolftallemo/autoclear",
+          value: "https://github.com/Regalijan/autoclear",
         },
       ],
       title: "About",

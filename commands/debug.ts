@@ -52,7 +52,7 @@ export = {
         },
         {
           name: "Repository",
-          value: "https://github.com/Wolftallemo/autoclear",
+          value: "https://github.com/Regalijan/autoclear",
         },
         { name: "Commit", value: gitInfo.toString() },
         { name: "Node Version", value: process.version },

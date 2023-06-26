@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Wolftallemo/autoclear.git"
+    "url": "git+https://github.com/Regalijan/autoclear.git"
   },
   "author": "Wolftallemo",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Wolftallemo/autoclear/issues"
+    "url": "https://github.com/Regalijan/autoclear/issues"
   },
-  "homepage": "https://github.com/Wolftallemo/autoclear#readme",
+  "homepage": "https://github.com/Regalijan/autoclear#readme",
   "devDependencies": {
     "@types/node": "^20.3.1",
     "@types/pg": "^8.10.2",
