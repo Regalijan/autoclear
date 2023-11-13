@@ -32,7 +32,7 @@ const intCommands: Collection<
 > = new Collection();
 
 const intFiles = readdirSync(join(__dirname, "commands")).filter((f) =>
-  f.endsWith(".js")
+  f.endsWith(".js"),
 );
 
 for (const file of intFiles) {
@@ -59,7 +59,7 @@ bot.login().catch((e) => {
 
 bot.once("ready", function (): void {
   console.log(
-    `Shard ${bot.shard?.ids[0]} ready with ${bot.guilds.cache.size} guilds.`
+    `Shard ${bot.shard?.ids[0]} ready with ${bot.guilds.cache.size} guilds.`,
   );
 });
 
@@ -90,7 +90,7 @@ bot.on(
     await db
       .query("DELETE FROM channels WHERE channel = $1;", [channel.id])
       .catch((e) => console.error(e));
-  }
+  },
 );
 
 bot.on(
@@ -101,7 +101,7 @@ bot.on(
       const command = intCommands.get(int.commandName); // Hacky but whatever, require() is sort of a mess with ts
       if (!command)
         throw Error(
-          "Command does not exist but <Collection>.has() returned true"
+          "Command does not exist but <Collection>.has() returned true",
         );
       if (!int.member?.user?.id)
         throw Error("Interaction has no associated member");
@@ -114,7 +114,7 @@ bot.on(
       const commandUser = await int.guild?.members.fetch(int.member.user.id);
       if (!commandUser)
         throw Error(
-          "Interaction has a member but member did not exist in guild"
+          "Interaction has a member but member did not exist in guild",
         );
       if (
         command.permissions?.length &&
@@ -128,11 +128,11 @@ bot.on(
       console.error(e);
       await int
         .reply(
-          `Oops! An error occured while running this command;\n\nIf you contact the developer, give them this information:\n${e}`
+          `Oops! An error occured while running this command;\n\nIf you contact the developer, give them this information:\n${e}`,
         )
         .catch((e) => console.error(e));
     }
-  }
+  },
 );
 
 setInterval(async function (): Promise<void> {
@@ -142,7 +142,7 @@ setInterval(async function (): Promise<void> {
     ])
     .catch((e) => console.error(e));
   if (typeof staleChannels === "undefined") return;
-  for (let i = 0; i < staleChannels.rowCount; i++) {
+  for (let i = 0; i < (staleChannels.rowCount ?? 0); i++) {
     if (
       parseInt(staleChannels.rows[i].last_ran) +
         parseInt(staleChannels.rows[i].interval) * 60000 >
