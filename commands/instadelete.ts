@@ -30,7 +30,7 @@ export = {
       case "disable":
         await db.query(
           "DELETE FROM channels WHERE channel = $1 AND guild = $2 AND is_insta = true;",
-          [channel.id, i.guildId]
+          [channel.id, i.guildId],
         );
         await i.reply({
           content: `Instadelete disabled for <#${channel.id}>.`,
@@ -58,7 +58,8 @@ export = {
             await db.query("SELECT * FROM channels WHERE channel = $1;", [
               channel.id,
             ])
-          ).rowCount > 0
+          ).rowCount ??
+          0 > 0
         ) {
           await i.reply({
             content:
@@ -68,7 +69,7 @@ export = {
         }
         await db.query(
           "INSERT INTO channels (channel, guild, is_insta) VALUES ($1, $2, true);",
-          [channel.id, i.guildId]
+          [channel.id, i.guildId],
         );
         await i.reply({ content: `Instadelete enabled for <#${channel.id}>` });
         break;
