@@ -17,7 +17,7 @@ export = {
       case "disable":
         await db.query(
           "DELETE FROM channels WHERE channel = $1 AND guild = $2 AND is_insta = false;",
-          [targetChannel.id, i.guildId]
+          [targetChannel.id, i.guildId],
         );
         await i.reply({
           content: `<#${targetChannel.id}> will no longer autoclear.`,
@@ -35,9 +35,10 @@ export = {
           (
             await db.query(
               "SELECT * FROM channels WHERE channel = $1 AND guild = $2;",
-              [targetChannel.id, i.guildId]
+              [targetChannel.id, i.guildId],
             )
-          ).rowCount > 0
+          ).rowCount ??
+          0 > 0
         ) {
           await i.reply({
             content:
@@ -52,7 +53,7 @@ export = {
         }
         await db.query(
           "INSERT INTO channels (guild, channel, interval, last_ran, is_insta) VALUES ($1, $2, $3, $4, false);",
-          [i.guildId, targetChannel.id, interval, Date.now()]
+          [i.guildId, targetChannel.id, interval, Date.now()],
         );
         await i.reply({
           content: `<#${targetChannel.id}> is now set to autoclear.`,
