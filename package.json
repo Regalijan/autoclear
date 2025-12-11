@@ -19,7 +19,7 @@
   "homepage": "https://github.com/Regalijan/autoclear#readme",
   "devDependencies": {
     "@types/node": "^25.0.0",
-    "@types/pg": "^8.15.6",
+    "@types/pg": "^8.16.0",
     "prettier": "^3.7.4",
     "typescript": "^5.9.3"
   },
