@@ -13,12 +13,12 @@ const shardingManager = new ShardingManager(
   {
     token: process.env.BTKN,
     totalShards: "auto",
-  }
+  },
 );
 
 shardingManager.on("shardCreate", function (shard) {
   console.log(
-    `Launching shard ${shard.id + 1} of ${shardingManager.totalShards}`
+    `Launching shard ${shard.id + 1} of ${shardingManager.totalShards}`,
   );
 });
 (async () => {
@@ -43,7 +43,7 @@ shardingManager.on("shardCreate", function (shard) {
     }); // Initialize a new client to switch to the new database
     await db.connect();
     await db.query(
-      "CREATE TABLE IF NOT EXISTS channels (channel text NOT NULL, guild text NOT NULL, interval bigint, last_ran bigint, is_insta boolean NOT NULL);"
+      "CREATE TABLE IF NOT EXISTS channels (channel text NOT NULL, guild text NOT NULL, interval bigint, last_ran bigint, is_insta boolean NOT NULL);",
     );
   } catch {}
   await shardingManager.spawn();

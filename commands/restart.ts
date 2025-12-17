@@ -25,7 +25,7 @@ export = {
           content: `Restarting shard ${ShardClientUtil.shardIdForGuildId(
             // @ts-expect-error
             i.options.getString("server"),
-            i.client.shard?.count
+            i.client.shard?.count,
           )}...`,
         });
         await i.client.shard?.broadcastEval(
@@ -37,9 +37,9 @@ export = {
             shard: ShardClientUtil.shardIdForGuildId(
               // @ts-expect-error ?????? Didn't realize checking it beforehand still meant it could be null
               i.options.getString("server"),
-              i.client.shard.count
+              i.client.shard.count,
             ),
-          }
+          },
         );
       } else {
         await i.reply({ content: "Restarting current shard..." });

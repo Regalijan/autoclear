@@ -18,7 +18,7 @@ export = {
     if (!i.guild) throw Error("<CommandInteraction>.guild is null");
     const channels = await db.query(
       "SELECT * FROM channels WHERE guild = $1;",
-      [i.guild.id]
+      [i.guild.id],
     );
     if (channels.rowCount === 0) {
       await i.reply({ content: "No channels were found." });
@@ -34,7 +34,7 @@ export = {
     });
     let description = "";
     channels.rows.forEach(
-      (row) => (description += `<#${row.channel}> - ${row.interval} minutes\n`)
+      (row) => (description += `<#${row.channel}> - ${row.interval} minutes\n`),
     );
     embed.setDescription(description);
     embed.setTimestamp();
