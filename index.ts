@@ -48,3 +48,10 @@ shardingManager.on("shardCreate", function (shard) {
   } catch {}
   await shardingManager.spawn();
 })();
+
+process.on("SIGTERM", () => {
+  shardingManager.shards.each((shard) => {
+    shard.kill();
+  });
+  process.exit();
+});
