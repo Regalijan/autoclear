@@ -200,7 +200,12 @@ setInterval(async function (): Promise<void> {
         )
           ids.push(msg.id);
       });
-      await channel.bulkDelete(ids).catch((e) => console.error(e));
+
+      if (ids.length > 1) {
+        await channel.bulkDelete(ids).catch(console.error);
+      } else if (ids.length === 1) {
+        await channel.messages.delete(ids[0]);
+      }
     }
     await db
       .query("UPDATE channels SET last_ran = $1 WHERE channel = $2;", [
