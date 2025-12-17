@@ -12,5 +12,7 @@ services:
     build: .
     depends_on:
       - postgres
+    init: true
     links:
       - postgres
+    restart: unless-stopped
