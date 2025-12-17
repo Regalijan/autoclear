@@ -8,10 +8,11 @@ import {
   Client,
   Collection,
   CommandInteraction,
+  DiscordAPIError,
   DMChannel,
   GatewayIntentBits,
+  Guild,
   GuildChannel,
-  HTTPError,
   Message,
   PermissionFlagsBits,
   PermissionResolvable,
@@ -57,7 +58,7 @@ bot.login().catch((e) => {
   process.exit();
 });
 
-bot.once("ready", function (): void {
+bot.once("clientReady", function (): void {
   console.log(
     `Shard ${bot.shard?.ids[0]} ready with ${bot.guilds.cache.size} guilds.`,
   );
@@ -135,6 +136,13 @@ bot.on(
   },
 );
 
+async function deleteServer(guild: string) {
+  await db.query("BEGIN");
+  await db.query("DELETE FROM channels WHERE guild = $1;", [guild]);
+  await db.query("DELETE FROM settings WHERE guild = $1;", [guild]);
+  await db.query("COMMIT");
+}
+
 setInterval(async function (): Promise<void> {
   const staleChannels = await db
     .query("SELECT * FROM channels WHERE is_insta = false AND last_ran < $1;", [
@@ -149,17 +157,24 @@ setInterval(async function (): Promise<void> {
       Date.now()
     )
       continue;
+
     const guild = await bot.guilds
       .fetch(staleChannels.rows[i].guild)
-      .catch((e) => console.error(e));
+      .catch(async (e) => {
+        if (e instanceof DiscordAPIError && e.code === 10004) {
+          await deleteServer(staleChannels.rows[i].guild);
+        } else console.error(e);
+      });
     if (typeof guild === "undefined") continue;
     const untypedChannel: any = await guild.channels
       .fetch(staleChannels.rows[i].channel)
-      .catch((e: HTTPError) => e);
+      .catch((e: DiscordAPIError) => e);
 
-    if (untypedChannel instanceof HTTPError && untypedChannel.status === 404) {
-      await db.query("DELETE FROM channels WHERE guild = $1;", [guild]);
-      continue;
+    if (untypedChannel instanceof DiscordAPIError) {
+      if (untypedChannel.code === 10004) deleteServer(staleChannels.rows[i].guild)
+      else if (untypedChannel.code === 10003) {
+        await db.query("DELETE FROM channels WHERE channel = $1;", [staleChannels.rows[i].channel]);
+      } else console.error(untypedChannel)
     }
     if (typeof untypedChannel === "undefined") continue;
     const user = bot.application?.id;
@@ -187,7 +202,7 @@ setInterval(async function (): Promise<void> {
       channel.lastMessage.createdTimestamp > Date.now() - 1209600000
     ) {
       const fetchedMsgs = await channel.messages.fetch({ limit: 100 });
-      const ids: string[] = [];
+      let ids: string[] = [];
       fetchedMsgs.forEach((msg) => {
         if (!msg.pinned && msg.createdTimestamp > Date.now() - 1209600000)
           ids.push(msg.id);
