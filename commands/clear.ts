@@ -22,7 +22,7 @@ export = {
     if (
       !(await i.guild?.channels.fetch(targetChannel.id))
         ?.permissionsFor(i.client.application?.id)
-        ?.has(PermissionFlagsBits.ManageChannels)
+        ?.has(PermissionFlagsBits.ManageMessages)
     ) {
       await i.reply({
         content:
