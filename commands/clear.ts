@@ -30,15 +30,15 @@ export = {
       });
       return;
     }
-    const guildChannel = await i.guild?.channels.fetch(i.channelId);
-    if (!["GUILD_TEXT"].includes(targetChannel.type.toString())) {
+    const guildChannel = await i.guild?.channels.fetch(targetChannel.id);
+    if (guildChannel?.type !== ChannelType.GuildText) {
       await i.reply({
         content:
           "I cannot clear this channel as bulk deleting is not supported.",
       });
       return;
     }
-    // @ts-expect-error
+
     await guildChannel.bulkDelete(amount);
     await i.reply({ content: "Channel purged successfully." });
   },
