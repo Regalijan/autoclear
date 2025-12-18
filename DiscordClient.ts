@@ -216,13 +216,13 @@ setInterval(async function (): Promise<void> {
           ids.push(msg.id);
       });
 
-      ids = ids.filter((id) => id); // Filter out message ids that are not real snowflakes
-
       if (ids.length > 1) {
         await channel.bulkDelete(ids).catch(console.error);
       } else if (ids.length === 1) {
         await channel.messages.delete(ids[0]);
       }
+      // Manually sweep out cache because the delete events may not be processed fast enough
+      channel.messages.cache.sweep((m) => ids.includes(m.id));
     }
     await db
       .query("UPDATE channels SET last_ran = $1 WHERE channel = $2;", [
