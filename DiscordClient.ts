@@ -216,6 +216,8 @@ setInterval(async function (): Promise<void> {
           ids.push(msg.id);
       });
 
+      ids = ids.filter(id => id) // Filter out message ids that are not real snowflakes
+ 
       if (ids.length > 1) {
         await channel.bulkDelete(ids).catch(console.error);
       } else if (ids.length === 1) {
