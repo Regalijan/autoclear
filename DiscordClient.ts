@@ -27,7 +27,6 @@ const intCommands: Collection<
   {
     name: string;
     channels: TextBasedChannelTypes[];
-    permissions: PermissionResolvable[];
     exec(interaction: CommandInteraction): Promise<void>;
   }
 > = new Collection();
@@ -117,13 +116,6 @@ bot.on(
         throw Error(
           "Interaction has a member but member did not exist in guild",
         );
-      if (
-        command.permissions?.length &&
-        !commandUser.permissions.has(command.permissions)
-      ) {
-        await int.reply("You cannot run this command.");
-        return;
-      }
       await command.exec(int);
     } catch (e) {
       console.error(e);

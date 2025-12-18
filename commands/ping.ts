@@ -7,7 +7,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     await i.reply({ content: `:ping_pong: Latency: ${i.client.ws.ping}ms` });
   },

@@ -7,7 +7,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!i.client.application) {
       await i.reply({

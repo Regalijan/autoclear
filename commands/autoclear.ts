@@ -8,7 +8,6 @@ import db from "../database";
 export = {
   name: "autoclear",
   channels: [ChannelType.GuildText],
-  permissions: [PermissionFlagsBits.ManageGuild],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!i.guildId) throw Error("<CommandInteraction>.guildId is null");
     const action = i.options.getString("action", true);

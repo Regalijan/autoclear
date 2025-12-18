@@ -11,7 +11,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [PermissionFlagsBits.ManageMessages],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     let amount = i.options.getInteger("amount") ?? 100;
     if (amount > 100 || amount < 0) amount = 100;

@@ -12,7 +12,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [PermissionFlagsBits.ManageGuild],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const chnlId = i.options.getString("channelid");
     if (!chnlId) {

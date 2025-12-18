@@ -13,7 +13,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [PermissionFlagsBits.ManageGuild],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!i.guild) throw Error("<CommandInteraction>.guild is null");
     const channels = await db.query(

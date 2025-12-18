@@ -7,7 +7,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const owner = i.client.application?.owner;
     if (!owner) {

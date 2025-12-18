@@ -11,7 +11,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (i.options.getBoolean("allshards")) {
       await i.reply({ content: "Restarting all shards..." });

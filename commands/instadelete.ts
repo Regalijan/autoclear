@@ -12,7 +12,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [PermissionFlagsBits.ManageGuild],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     if (!i.guildId) throw Error("<CommandInteraction>.guildId is null");
     const channel = i.options.getChannel("targetchannel");

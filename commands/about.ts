@@ -11,7 +11,6 @@ export = {
     ChannelType.PublicThread,
     ChannelType.PrivateThread,
   ],
-  permissions: [],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
     const embed = new EmbedBuilder({
       author: {
