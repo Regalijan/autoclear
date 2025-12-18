@@ -107,7 +107,7 @@ bot.on(
       if (!int.member?.user?.id)
         throw Error("Interaction has no associated member");
       if (
-        !int.channel?.type ||
+        typeof int.channel?.type !== "number" ||
         (command?.channels.length &&
           !command.channels.includes(int.channel?.type))
       )
@@ -155,7 +155,9 @@ setInterval(async function (): Promise<void> {
       .fetch(staleChannels.rows[i].guild)
       .catch(async (e) => {
         if (e instanceof DiscordAPIError && e.code === 10004) {
-          await db.query("DELETE FROM channels WHERE guild = $1;", [staleChannels.rows[i].guild]);
+          await db.query("DELETE FROM channels WHERE guild = $1;", [
+            staleChannels.rows[i].guild,
+          ]);
         } else console.error(e);
       });
     if (typeof guild === "undefined") continue;
@@ -164,10 +166,15 @@ setInterval(async function (): Promise<void> {
       .catch((e: DiscordAPIError) => e);
 
     if (untypedChannel instanceof DiscordAPIError) {
-      if (untypedChannel.code === 10004) await db.query("DELETE FROM channels WHERE guild = $1;", [staleChannels.rows[i].guild])
+      if (untypedChannel.code === 10004)
+        await db.query("DELETE FROM channels WHERE guild = $1;", [
+          staleChannels.rows[i].guild,
+        ]);
       else if (untypedChannel.code === 10003) {
-        await db.query("DELETE FROM channels WHERE channel = $1;", [staleChannels.rows[i].channel]);
-      } else console.error(untypedChannel)
+        await db.query("DELETE FROM channels WHERE channel = $1;", [
+          staleChannels.rows[i].channel,
+        ]);
+      } else console.error(untypedChannel);
     }
     if (typeof untypedChannel === "undefined") continue;
     const user = bot.application?.id;
@@ -209,8 +216,8 @@ setInterval(async function (): Promise<void> {
           ids.push(msg.id);
       });
 
-      ids = ids.filter(id => id) // Filter out message ids that are not real snowflakes
- 
+      ids = ids.filter((id) => id); // Filter out message ids that are not real snowflakes
+
       if (ids.length > 1) {
         await channel.bulkDelete(ids).catch(console.error);
       } else if (ids.length === 1) {
