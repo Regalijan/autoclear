@@ -36,30 +36,10 @@ CREATE TABLE public.channels (
 ALTER TABLE public.channels OWNER TO postgres;
 
 --
--- Name: settings; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.settings (
-    guild text NOT NULL,
-    prefix text
-);
-
-
-ALTER TABLE public.settings OWNER TO postgres;
-
---
 -- Data for Name: channels; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.channels (channel, guild, "interval", last_ran, is_insta) FROM stdin;
-\.
-
-
---
--- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.settings (guild, prefix) FROM stdin;
 \.
 
 
@@ -69,14 +49,6 @@ COPY public.settings (guild, prefix) FROM stdin;
 
 ALTER TABLE ONLY public.channels
     ADD CONSTRAINT channels_pkey PRIMARY KEY (channel);
-
-
---
--- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.settings
-    ADD CONSTRAINT settings_pkey PRIMARY KEY (guild);
 
 
 --
