@@ -8,8 +8,8 @@ export = {
   name: "restart",
   channels: [
     ChannelType.GuildText,
-    ChannelType.GuildPublicThread,
-    ChannelType.GuildPrivateThread,
+    ChannelType.PublicThread,
+    ChannelType.PrivateThread,
   ],
   permissions: [],
   async exec(i: ChatInputCommandInteraction): Promise<void> {

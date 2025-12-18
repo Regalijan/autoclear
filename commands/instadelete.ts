@@ -9,8 +9,8 @@ export = {
   name: "instadelete",
   channels: [
     ChannelType.GuildText,
-    ChannelType.GuildPublicThread,
-    ChannelType.GuildPrivateThread,
+    ChannelType.PublicThread,
+    ChannelType.PrivateThread,
   ],
   permissions: [PermissionFlagsBits.ManageGuild],
   async exec(i: ChatInputCommandInteraction): Promise<void> {
