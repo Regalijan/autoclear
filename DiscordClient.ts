@@ -136,13 +136,6 @@ bot.on(
   },
 );
 
-async function deleteServer(guild: string) {
-  await db.query("BEGIN");
-  await db.query("DELETE FROM channels WHERE guild = $1;", [guild]);
-  await db.query("DELETE FROM settings WHERE guild = $1;", [guild]);
-  await db.query("COMMIT");
-}
-
 setInterval(async function (): Promise<void> {
   const staleChannels = await db
     .query("SELECT * FROM channels WHERE is_insta = false AND last_ran < $1;", [
@@ -162,7 +155,7 @@ setInterval(async function (): Promise<void> {
       .fetch(staleChannels.rows[i].guild)
       .catch(async (e) => {
         if (e instanceof DiscordAPIError && e.code === 10004) {
-          await deleteServer(staleChannels.rows[i].guild);
+          await db.query("DELETE FROM channels WHERE guild = $1;", [staleChannels.rows[i].guild]);
         } else console.error(e);
       });
     if (typeof guild === "undefined") continue;
@@ -171,7 +164,7 @@ setInterval(async function (): Promise<void> {
       .catch((e: DiscordAPIError) => e);
 
     if (untypedChannel instanceof DiscordAPIError) {
-      if (untypedChannel.code === 10004) deleteServer(staleChannels.rows[i].guild)
+      if (untypedChannel.code === 10004) await db.query("DELETE FROM channels WHERE guild = $1;", [staleChannels.rows[i].guild])
       else if (untypedChannel.code === 10003) {
         await db.query("DELETE FROM channels WHERE channel = $1;", [staleChannels.rows[i].channel]);
       } else console.error(untypedChannel)
