@@ -230,18 +230,3 @@ setInterval(async function (): Promise<void> {
       .catch((e) => console.error(e));
   }
 }, 60000);
-
-process.on("SIGHUP", function (): void {
-  bot.destroy();
-  process.exit();
-});
-
-process.on("SIGINT", function (): void {
-  bot.destroy();
-  process.exit();
-});
-
-process.on("SIGTERM", function () {
-  bot.destroy();
-  process.exit();
-});
