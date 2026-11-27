@@ -1,4 +1,4 @@
-FROM node:24
+FROM node:26
 COPY . /opt/autoclear
 WORKDIR /opt/autoclear
 RUN rm -rf postgres
